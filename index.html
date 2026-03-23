@@ -1,0 +1,2257 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hydraulic & Pneumatic System di Kapal | Rafael Sukirno, CE</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Share+Tech+Mono&family=Barlow+Condensed:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════════
+   VARIABLES & RESET
+═══════════════════════════════════════════════════ */
+:root{
+  --navy:   #020C18;
+  --navy2:  #051525;
+  --navy3:  #081F38;
+  --navy4:  #0B2A4E;
+  --navy5:  #0D3366;
+  --cyan:   #00E5FF;
+  --cyan2:  #00B8D4;
+  --cyan3:  #0097A7;
+  --gold:   #FFD600;
+  --gold2:  #FFAB00;
+  --red:    #FF4444;
+  --red2:   #CC0000;
+  --green:  #00E676;
+  --green2: #00C853;
+  --orange: #FF6D00;
+  --purple: #CE93D8;
+  --white:  #E8F4FD;
+  --gray:   #7BACC4;
+  --gray2:  #4A7A96;
+  --gray3:  #2A5068;
+  --border: rgba(0,229,255,0.18);
+  --border2:rgba(0,229,255,0.08);
+  --glow:   0 0 20px rgba(0,229,255,0.25);
+  --glow2:  0 0 40px rgba(0,229,255,0.15);
+  --shadow: 0 8px 32px rgba(0,0,0,0.5);
+  --W:      10; /* slide width ref */
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;font-size:15px;}
+body{
+  background:var(--navy);
+  color:var(--white);
+  font-family:'Barlow',sans-serif;
+  line-height:1.7;
+  overflow-x:hidden;
+}
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-track{background:var(--navy2);}
+::-webkit-scrollbar-thumb{background:var(--cyan3);border-radius:2px;}
+
+/* ── TEXTURE OVERLAY ── */
+body::before{
+  content:'';
+  position:fixed;inset:0;
+  background-image:
+    repeating-linear-gradient(0deg,rgba(0,229,255,0.015) 0,rgba(0,229,255,0.015) 1px,transparent 1px,transparent 4px),
+    repeating-linear-gradient(90deg,rgba(0,229,255,0.008) 0,rgba(0,229,255,0.008) 1px,transparent 1px,transparent 60px);
+  pointer-events:none;z-index:0;
+}
+
+/* ── GRID PATTERN ── */
+.grid-bg{
+  position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(0,229,255,0.04) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,229,255,0.04) 1px,transparent 1px);
+  background-size:50px 50px;
+  pointer-events:none;
+}
+
+/* ═══════════════════════════════════════════════════
+   HEADER / NAV
+═══════════════════════════════════════════════════ */
+header{
+  position:fixed;top:0;left:0;right:0;z-index:9000;
+  background:rgba(2,12,24,0.97);
+  border-bottom:1px solid var(--border);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+}
+.hdr-inner{
+  max-width:1500px;margin:0 auto;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 20px;height:62px;
+  position:relative;
+}
+.logo-wrap{display:flex;align-items:center;gap:12px;text-decoration:none;}
+.logo-icon{
+  width:36px;height:36px;
+  border:2px solid var(--cyan);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.1rem;
+  box-shadow:0 0 12px rgba(0,229,255,0.4);
+  animation:logo-pulse 3s infinite;
+}
+@keyframes logo-pulse{0%,100%{box-shadow:0 0 12px rgba(0,229,255,0.4);}50%{box-shadow:0 0 24px rgba(0,229,255,0.7);}}
+.logo-text{
+  font-family:'Orbitron',sans-serif;
+  font-size:.9rem;font-weight:700;color:var(--cyan);
+  letter-spacing:2px;
+}
+.logo-text span{color:var(--gold);}
+.logo-sub{
+  font-family:'Share Tech Mono',monospace;
+  font-size:.6rem;color:var(--gray);letter-spacing:1px;
+  display:block;margin-top:-3px;
+}
+nav.main-nav{display:flex;gap:2px;flex-wrap:wrap;}
+nav.main-nav a{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:.78rem;font-weight:700;letter-spacing:.8px;
+  color:var(--gray);padding:5px 10px;border-radius:3px;
+  text-decoration:none;text-transform:uppercase;
+  transition:.2s;border:1px solid transparent;
+  white-space:nowrap;
+}
+nav.main-nav a:hover{color:var(--cyan);border-color:var(--border);background:rgba(0,229,255,0.06);}
+nav.main-nav a.active{color:var(--cyan);border-color:var(--border);}
+.hdr-badge{
+  display:flex;align-items:center;gap:6px;
+  font-family:'Share Tech Mono',monospace;
+  font-size:.65rem;color:var(--gold);letter-spacing:1px;
+  border:1px solid rgba(255,214,0,0.3);
+  padding:4px 10px;border-radius:2px;
+  background:rgba(255,214,0,0.05);
+  white-space:nowrap;
+}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:blink 2s infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.2;}}
+.hbg{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:6px;}
+.hbg span{width:22px;height:2px;background:var(--cyan);transition:.3s;display:block;}
+
+/* Progress bar */
+#pbar{position:fixed;top:62px;left:0;height:2px;background:linear-gradient(90deg,var(--cyan),var(--gold),var(--green));z-index:8999;transition:width .1s;width:0;}
+
+/* ═══════════════════════════════════════════════════
+   HERO
+═══════════════════════════════════════════════════ */
+#hero{
+  min-height:100vh;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  text-align:center;
+  padding:100px 20px 60px;
+  position:relative;
+  overflow:hidden;
+  background:
+    radial-gradient(ellipse 120% 70% at 50% -10%,rgba(0,229,255,0.07) 0%,transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 80%,rgba(255,214,0,0.04) 0%,transparent 50%),
+    var(--navy);
+}
+.hero-particles{
+  position:absolute;inset:0;overflow:hidden;pointer-events:none;
+}
+.particle{
+  position:absolute;border-radius:50%;
+  animation:float-particle linear infinite;
+  opacity:.4;
+}
+@keyframes float-particle{0%{transform:translateY(100vh) rotate(0deg);opacity:0;}10%{opacity:.4;}90%{opacity:.4;}100%{transform:translateY(-100px) rotate(720deg);opacity:0;}}
+.hero-klass{
+  font-family:'Share Tech Mono',monospace;
+  font-size:.72rem;letter-spacing:4px;color:var(--gold);
+  border:1px solid rgba(255,214,0,0.35);
+  padding:6px 20px;border-radius:2px;
+  background:rgba(255,214,0,0.05);
+  margin-bottom:28px;
+  display:inline-block;
+  position:relative;z-index:1;
+}
+h1.hero-h1{
+  font-family:'Orbitron',sans-serif;
+  font-size:clamp(1.6rem,5vw,3.8rem);
+  font-weight:900;line-height:1.1;
+  margin-bottom:12px;
+  position:relative;z-index:1;
+}
+.hero-h1 .t1{color:var(--cyan);}
+.hero-h1 .t2{color:var(--gold);}
+.hero-h1 .t3{color:var(--white);font-size:.55em;display:block;margin-top:8px;font-weight:400;}
+.hero-sub{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:1.15rem;letter-spacing:2px;
+  color:var(--gray);margin-bottom:12px;
+  position:relative;z-index:1;
+}
+.hero-desc{
+  max-width:750px;color:#6EA0BE;font-size:.97rem;
+  margin-bottom:40px;position:relative;z-index:1;
+}
+
+/* Semester chips */
+.sem-row{
+  display:flex;gap:8px;flex-wrap:wrap;
+  justify-content:center;margin-bottom:40px;
+  position:relative;z-index:1;
+}
+.sem-chip{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:.82rem;font-weight:700;letter-spacing:1px;
+  padding:6px 16px;border-radius:3px;
+  text-transform:uppercase;
+  transition:.3s;cursor:pointer;
+}
+.sem-chip.s1{background:rgba(0,230,118,0.12);color:var(--green);border:1px solid rgba(0,230,118,0.3);}
+.sem-chip.s2{background:rgba(255,214,0,0.1);color:var(--gold);border:1px solid rgba(255,214,0,0.3);}
+.sem-chip.s3{background:rgba(255,109,0,0.1);color:var(--orange);border:1px solid rgba(255,109,0,0.3);}
+.sem-chip.s4{background:rgba(255,68,68,0.1);color:var(--red);border:1px solid rgba(255,68,68,0.3);}
+
+/* Stat row */
+.hero-stats{
+  display:flex;gap:40px;justify-content:center;
+  flex-wrap:wrap;margin-bottom:44px;
+  position:relative;z-index:1;
+}
+.hstat{text-align:center;}
+.hstat-n{
+  font-family:'Orbitron',sans-serif;
+  font-size:2.2rem;font-weight:700;color:var(--cyan);
+}
+.hstat-l{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:.72rem;letter-spacing:2px;
+  color:var(--gray);text-transform:uppercase;
+}
+
+/* CTA */
+.cta-row{
+  display:flex;gap:14px;flex-wrap:wrap;
+  justify-content:center;
+  position:relative;z-index:1;
+}
+.btn-cta,.btn-out{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:.95rem;font-weight:700;letter-spacing:2px;
+  text-transform:uppercase;padding:13px 30px;border-radius:3px;
+  text-decoration:none;transition:.25s;cursor:pointer;border:none;
+  clip-path:polygon(8px 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,0 100%,0 8px);
+}
+.btn-cta{background:var(--cyan);color:var(--navy);}
+.btn-cta:hover{background:var(--gold);transform:translateY(-2px);}
+.btn-out{background:transparent;color:var(--cyan);border:1px solid var(--cyan);}
+.btn-out:hover{background:rgba(0,229,255,0.1);}
+
+/* ═══════════════════════════════════════════════════
+   SECTION WRAPPER
+═══════════════════════════════════════════════════ */
+.sec{padding:80px 20px;max-width:1500px;margin:0 auto;}
+.sec-full{padding:80px 0;background:var(--navy2);}
+.sec-inner{max-width:1500px;margin:0 auto;padding:0 20px;}
+hr.sep{border:none;border-top:1px solid var(--border2);margin:0;}
+.slbl{
+  font-family:'Share Tech Mono',monospace;
+  font-size:.68rem;letter-spacing:4px;color:var(--gold);
+  display:block;margin-bottom:6px;
+}
+.stitle{
+  font-family:'Orbitron',sans-serif;
+  font-size:clamp(1.3rem,3vw,2.1rem);font-weight:700;
+  margin-bottom:8px;
+}
+.stitle span{color:var(--cyan);}
+.sdesc{color:var(--gray);max-width:720px;font-size:.93rem;margin-bottom:36px;}
+.divr{width:50px;height:2px;background:linear-gradient(90deg,var(--cyan),var(--gold));margin-bottom:36px;}
+
+/* ═══════════════════════════════════════════════════
+   KNOWLEDGE TREE
+═══════════════════════════════════════════════════ */
+.tree-wrap{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+  gap:18px;
+  margin-top:20px;
+}
+.tree-node{
+  background:var(--navy3);
+  border:1px solid var(--border);
+  border-radius:6px;
+  padding:24px;
+  transition:.3s;
+  cursor:pointer;
+  position:relative;
+  overflow:hidden;
+}
+.tree-node::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  transition:.3s;
+}
+.tree-node.root{border-color:rgba(0,230,118,0.3);}
+.tree-node.root::before{background:var(--green);}
+.tree-node.trunk{border-color:rgba(0,229,255,0.3);}
+.tree-node.trunk::before{background:var(--cyan);}
+.tree-node.branch{border-color:rgba(255,214,0,0.4);}
+.tree-node.branch::before{background:var(--gold);}
+.tree-node.leaf{border-color:rgba(255,109,0,0.3);}
+.tree-node.leaf::before{background:var(--orange);}
+.tree-node:hover{transform:translateY(-4px);box-shadow:0 10px 30px rgba(0,0,0,0.4);}
+.tn-icon{font-size:2rem;margin-bottom:10px;display:block;}
+.tn-cat{
+  font-family:'Share Tech Mono',monospace;
+  font-size:.62rem;letter-spacing:2px;margin-bottom:6px;
+}
+.tree-node.root .tn-cat{color:var(--green);}
+.tree-node.trunk .tn-cat{color:var(--cyan);}
+.tree-node.branch .tn-cat{color:var(--gold);}
+.tree-node.leaf .tn-cat{color:var(--orange);}
+.tn-title{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:1.05rem;font-weight:700;letter-spacing:.8px;
+  color:var(--white);margin-bottom:8px;text-transform:uppercase;
+}
+.tn-body{font-size:.85rem;color:var(--gray);line-height:1.6;}
+
+/* ═══════════════════════════════════════════════════
+   ROADMAP
+═══════════════════════════════════════════════════ */
+.roadmap-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px;}
+.rm-tab{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:.82rem;font-weight:700;letter-spacing:.8px;
+  padding:8px 20px;border-radius:3px;
+  border:1px solid var(--border);
+  color:var(--gray);background:var(--navy3);
+  cursor:pointer;transition:.2s;text-transform:uppercase;
+}
+.rm-tab:hover{border-color:var(--cyan);color:var(--cyan);}
+.rm-tab.active{color:var(--navy);background:var(--cyan);border-color:var(--cyan);}
+.rm-panel{display:none;}
+.rm-panel.active{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:18px;}
+.rm-card{
+  background:var(--navy3);border:1px solid var(--border);
+  border-radius:6px;padding:22px;
+  transition:.3s;cursor:pointer;
+}
+.rm-card:hover{transform:translateY(-3px);border-color:var(--cyan);box-shadow:var(--glow);}
+.rm-num{
+  font-family:'Orbitron',sans-serif;
+  font-size:2rem;font-weight:700;
+  margin-bottom:6px;
+}
+.rm-tag{
+  font-family:'Share Tech Mono',monospace;
+  font-size:.65rem;letter-spacing:2px;
+  padding:3px 8px;border-radius:2px;
+  margin-bottom:10px;display:inline-block;
+}
+.rm-title{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:1rem;font-weight:700;letter-spacing:.8px;
+  color:var(--white);margin-bottom:8px;text-transform:uppercase;
+}
+.rm-list{list-style:none;}
+.rm-list li{
+  font-size:.85rem;color:var(--gray);
+  padding:4px 0;border-bottom:1px solid var(--border2);
+  display:flex;gap:8px;align-items:flex-start;
+}
+.rm-list li::before{content:'▸';color:var(--cyan);flex-shrink:0;font-size:.75rem;margin-top:3px;}
+
+/* ═══════════════════════════════════════════════════
+   COMPONENT GRID (Simbol & Komponen)
+═══════════════════════════════════════════════════ */
+.comp-filter{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px;}
+.cf-btn{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:.8rem;font-weight:700;letter-spacing:.8px;
+  padding:7px 18px;border-radius:3px;
+  border:1px solid var(--border);
+  color:var(--gray);background:var(--navy3);
+  cursor:pointer;transition:.2s;text-transform:uppercase;
+}
+.cf-btn:hover,.cf-btn.active{color:var(--cyan);border-color:var(--cyan);background:rgba(0,229,255,0.07);}
+.comp-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(195px,1fr));
+  gap:14px;
+}
+.comp-card{
+  background:var(--navy3);
+  border:1px solid var(--border);
+  border-radius:6px;
+  overflow:hidden;cursor:pointer;transition:.3s;
+  position:relative;
+}
+.comp-card::after{
+  content:'KLIK →';
+  position:absolute;inset:0;
+  background:rgba(0,229,255,0.1);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Share Tech Mono',monospace;
+  font-size:.7rem;color:var(--cyan);letter-spacing:2px;
+  opacity:0;transition:.3s;
+}
+.comp-card:hover{border-color:var(--cyan);transform:translateY(-4px);box-shadow:var(--glow);}
+.comp-card:hover::after{opacity:1;}
+.cc-sym{
+  background:var(--navy4);
+  height:90px;
+  display:flex;align-items:center;justify-content:center;
+  border-bottom:1px solid var(--border2);
+}
+.cc-sym svg{width:70px;height:70px;}
+.cc-body{padding:14px;}
+.cc-badge{
+  font-family:'Share Tech Mono',monospace;
+  font-size:.6rem;letter-spacing:1.5px;
+  padding:2px 7px;border-radius:2px;
+  margin-bottom:7px;display:inline-block;
+}
+.cc-name{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:.92rem;font-weight:700;letter-spacing:.8px;
+  color:var(--white);margin-bottom:3px;text-transform:uppercase;
+}
+.cc-en{font-family:'Share Tech Mono',monospace;font-size:.68rem;color:var(--gray2);}
+
+/* ═══════════════════════════════════════════════════
+   SYSTEM FLOW (Interactive)
+═══════════════════════════════════════════════════ */
+.flow-tabs{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap;}
+.ft{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:.82rem;font-weight:700;letter-spacing:.8px;
+  padding:8px 20px;border-radius:3px;
+  border:1px solid var(--border);
+  color:var(--gray);background:var(--navy3);
+  cursor:pointer;transition:.2s;text-transform:uppercase;
+}
+.ft.active{color:var(--gold);border-color:var(--gold);background:rgba(255,214,0,.06);}
+.flow-panel{display:none;}
+.flow-panel.active{display:block;}
+.flow-diagram{
+  background:var(--navy3);
+  border:1px solid var(--border);
+  border-radius:6px;
+  padding:32px 24px;
+  overflow-x:auto;
+}
+.flow-chain{
+  display:flex;align-items:center;
+  flex-wrap:wrap;gap:4px;
+  min-width:max-content;
+  margin-bottom:24px;
+}
+.fn{display:flex;flex-direction:column;align-items:center;gap:5px;min-width:105px;}
+.fb{
+  background:var(--navy2);
+  border:1px solid var(--cyan);
+  border-radius:4px;
+  padding:10px 14px;
+  text-align:center;
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:.82rem;font-weight:700;letter-spacing:.8px;
+  color:var(--cyan);text-transform:uppercase;
+  width:100%;cursor:pointer;transition:.2s;
+  position:relative;overflow:hidden;
+}
+.fb::after{
+  content:'';position:absolute;bottom:0;left:-100%;
+  width:100%;height:2px;background:var(--cyan);
+  animation:flow-slide 2.5s linear infinite;
+}
+@keyframes flow-slide{0%{left:-100%;}100%{left:100%;}}
+.fb.gld{border-color:var(--gold);color:var(--gold);}
+.fb.gld::after{background:var(--gold);}
+.fb.grn{border-color:var(--green);color:var(--green);}
+.fb.grn::after{background:var(--green);}
+.fb:hover{transform:scale(1.04);box-shadow:0 0 16px rgba(0,229,255,0.25);}
+.fs{font-size:.62rem;color:var(--gray);text-align:center;font-family:'Share Tech Mono',monospace;max-width:105px;}
+.farr{
+  font-size:1.5rem;color:var(--cyan);padding:0 4px;
+  animation:arr-pulse 1.5s infinite;
+}
+@keyframes arr-pulse{0%,100%{opacity:1;transform:translateX(0);}50%{opacity:.3;transform:translateX(6px);}}
+.farr.gld{color:var(--gold);}
+/* Port badges */
+.port-row{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0;}
+.pb{
+  font-family:'Share Tech Mono',monospace;font-size:.72rem;
+  padding:4px 10px;border-radius:2px;
+}
+.pb-p{background:rgba(0,229,255,.12);color:var(--cyan);border:1px solid rgba(0,229,255,.3);}
+.pb-a{background:rgba(0,230,118,.1);color:var(--green);border:1px solid rgba(0,230,118,.3);}
+.pb-b{background:rgba(255,214,0,.08);color:var(--gold);border:1px solid rgba(255,214,0,.3);}
+.pb-t{background:rgba(255,68,68,.1);color:var(--red);border:1px solid rgba(255,68,68,.3);}
+/* animated cylinder */
+.cyl-anim{
+  background:var(--navy4);border:1px solid var(--border);
+  border-radius:4px;padding:20px;margin-top:16px;
+  display:flex;flex-direction:column;align-items:center;
+}
+.cyl-stage{position:relative;width:300px;height:70px;margin:10px 0;}
+.cyl-body{
+  position:absolute;left:20px;right:60px;top:15px;bottom:15px;
+  border:2px solid var(--cyan);border-radius:4px;
+  background:rgba(0,229,255,.04);
+}
+.cyl-piston{
+  position:absolute;top:0;width:10px;height:100%;
+  background:var(--cyan);border-radius:2px;left:20%;
+  animation:c-piston 2.5s ease-in-out infinite;
+  box-shadow:0 0 12px rgba(0,229,255,.5);
+}
+@keyframes c-piston{0%,100%{left:12%;}50%{left:72%;}}
+.cyl-rod{
+  position:absolute;top:28%;right:0;height:44%;
+  width:60px;background:linear-gradient(90deg,var(--cyan2),var(--gray2));
+  border-radius:0 3px 3px 0;
+  animation:c-rod 2.5s ease-in-out infinite;
+}
+@keyframes c-rod{0%,100%{width:60px;}50%{width:20px;}}
+.fluid-in{
+  position:absolute;top:50%;left:4px;height:3px;width:0;
+  background:linear-gradient(90deg,transparent,var(--cyan));
+  transform:translateY(-50%);
+  animation:c-fluid 2.5s ease-in-out infinite;
+  box-shadow:0 0 8px var(--cyan);
+}
+@keyframes c-fluid{0%,100%{width:0;opacity:0;}30%,70%{width:50%;opacity:1;}50%{width:70%;}}
+
+/* ═══════════════════════════════════════════════════
+   CASE STUDY
+═══════════════════════════════════════════════════ */
+.case-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px;}
+.ct{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:.82rem;font-weight:700;letter-spacing:.8px;
+  padding:8px 20px;border-radius:3px;
+  border:1px solid var(--border);
+  color:var(--gray);background:var(--navy3);
+  cursor:pointer;transition:.2s;text-transform:uppercase;
+}
+.ct.active{color:var(--orange);border-color:var(--orange);background:rgba(255,109,0,.06);}
+.case-panel{display:none;}
+.case-panel.active{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
+@media(max-width:700px){.case-panel.active{grid-template-columns:1fr;}}
+.case-info{background:var(--navy3);border:1px solid var(--border);border-radius:6px;padding:26px;}
+.case-title{
+  font-family:'Orbitron',sans-serif;font-size:1rem;
+  color:var(--gold);margin-bottom:14px;
+}
+.case-step{display:flex;gap:14px;padding:10px 0;border-bottom:1px solid var(--border2);}
+.case-step:last-child{border:none;}
+.cs-n{
+  font-family:'Orbitron',sans-serif;font-size:1.1rem;
+  color:var(--cyan);min-width:30px;
+}
+.cs-i h4{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:.9rem;font-weight:700;letter-spacing:.8px;
+  color:var(--white);margin-bottom:3px;text-transform:uppercase;
+}
+.cs-i p{font-size:.83rem;color:var(--gray);}
+.case-specs{
+  background:var(--navy4);border:1px solid var(--border);
+  border-radius:6px;padding:22px;
+}
+.spec-title{
+  font-family:'Share Tech Mono',monospace;font-size:.72rem;
+  color:var(--cyan);letter-spacing:2px;margin-bottom:14px;
+}
+.spec-item{
+  display:flex;justify-content:space-between;
+  padding:8px 0;border-bottom:1px solid var(--border2);
+}
+.spec-k{font-size:.85rem;color:var(--gray);}
+.spec-v{font-size:.85rem;color:var(--white);font-weight:600;font-family:'Share Tech Mono',monospace;}
+
+/* ═══════════════════════════════════════════════════
+   TROUBLESHOOTING
+═══════════════════════════════════════════════════ */
+.ts-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(320px,1fr));
+  gap:18px;
+}
+.ts-card{
+  background:var(--navy3);border:1px solid var(--border);
+  border-radius:6px;padding:22px;
+  cursor:pointer;transition:.3s;
+}
+.ts-card:hover{border-color:var(--red);transform:translateY(-3px);}
+.ts-icon{font-size:1.8rem;margin-bottom:10px;}
+.ts-prob{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:1rem;font-weight:700;letter-spacing:.8px;
+  color:var(--red);margin-bottom:12px;text-transform:uppercase;
+}
+.ts-cause-title{
+  font-family:'Share Tech Mono',monospace;font-size:.68rem;
+  color:var(--gold);margin-bottom:6px;letter-spacing:1px;
+}
+.ts-list{list-style:none;margin-bottom:14px;}
+.ts-list li{
+  font-size:.85rem;color:var(--gray);
+  padding:4px 0;display:flex;gap:8px;
+}
+.ts-list li.cause::before{content:'⚠';color:var(--gold);flex-shrink:0;}
+.ts-list li.sol::before{content:'✓';color:var(--green);flex-shrink:0;}
+
+/* ═══════════════════════════════════════════════════
+   FAQ
+═══════════════════════════════════════════════════ */
+.faq-list{display:flex;flex-direction:column;gap:10px;}
+.faq-item{
+  background:var(--navy3);border:1px solid var(--border);
+  border-radius:6px;overflow:hidden;
+}
+.faq-q{
+  padding:16px 20px;cursor:pointer;
+  display:flex;align-items:center;justify-content:space-between;
+  transition:.2s;
+}
+.faq-q:hover{background:rgba(0,229,255,0.04);}
+.faq-qt{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:1rem;font-weight:700;letter-spacing:.5px;
+  color:var(--white);
+}
+.faq-ic{
+  font-size:1.2rem;color:var(--cyan);transition:.3s;flex-shrink:0;
+}
+.faq-item.open .faq-ic{transform:rotate(45deg);}
+.faq-a{
+  display:none;padding:0 20px 18px;
+  font-size:.9rem;color:var(--gray);line-height:1.7;
+}
+.faq-item.open .faq-a{display:block;}
+.faq-highlight{color:var(--cyan);font-weight:600;}
+
+/* ═══════════════════════════════════════════════════
+   SIMULATION
+═══════════════════════════════════════════════════ */
+.sim-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+  gap:18px;
+}
+.sim-card{
+  background:var(--navy3);border:1px solid var(--border);
+  border-radius:6px;padding:24px;transition:.3s;
+}
+.sim-card:hover{border-color:var(--cyan);transform:translateY(-3px);}
+.sim-ico{font-size:2.4rem;margin-bottom:10px;}
+.sim-name{font-family:'Orbitron',sans-serif;font-size:.9rem;color:var(--cyan);margin-bottom:6px;}
+.sim-desc{font-size:.84rem;color:var(--gray);margin-bottom:14px;line-height:1.6;}
+.sim-b{
+  font-family:'Share Tech Mono',monospace;font-size:.65rem;
+  padding:2px 7px;border-radius:2px;margin-bottom:10px;display:inline-block;
+}
+.sim-link{
+  display:inline-block;
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:.82rem;font-weight:700;letter-spacing:1px;
+  color:var(--navy);background:var(--cyan);
+  padding:8px 18px;border-radius:2px;
+  text-decoration:none;transition:.2s;text-transform:uppercase;
+}
+.sim-link:hover{background:var(--gold);}
+
+/* ═══════════════════════════════════════════════════
+   LEVEL MODE
+═══════════════════════════════════════════════════ */
+.level-switcher{display:flex;gap:8px;margin-bottom:28px;}
+.lv-btn{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:.82rem;font-weight:700;letter-spacing:.8px;
+  padding:8px 24px;border-radius:3px;
+  border:1px solid var(--border);
+  color:var(--gray);background:var(--navy3);
+  cursor:pointer;transition:.2s;text-transform:uppercase;
+}
+.lv-btn.active.basic{color:var(--green);border-color:var(--green);background:rgba(0,230,118,.07);}
+.lv-btn.active.inter{color:var(--gold);border-color:var(--gold);background:rgba(255,214,0,.06);}
+.lv-btn.active.adv{color:var(--red);border-color:var(--red);background:rgba(255,68,68,.07);}
+.lv-panel{display:none;}
+.lv-panel.active{display:block;}
+.lv-content{
+  background:var(--navy3);border:1px solid var(--border);
+  border-radius:6px;padding:28px;
+}
+.lv-content h3{
+  font-family:'Orbitron',sans-serif;font-size:1rem;
+  margin-bottom:16px;
+}
+.lv-content.basic h3{color:var(--green);}
+.lv-content.inter h3{color:var(--gold);}
+.lv-content.adv h3{color:var(--red);}
+.lv-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px;}
+@media(max-width:600px){.lv-grid{grid-template-columns:1fr;}}
+.lv-block{
+  background:var(--navy4);border:1px solid var(--border2);
+  border-radius:4px;padding:16px;
+}
+.lv-block h4{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:.9rem;font-weight:700;letter-spacing:.8px;
+  color:var(--white);margin-bottom:8px;text-transform:uppercase;
+}
+.lv-block p,.lv-block li{font-size:.85rem;color:var(--gray);line-height:1.6;}
+.lv-block ul{padding-left:16px;}
+.formula{
+  font-family:'Share Tech Mono',monospace;
+  font-size:1.2rem;color:var(--cyan);
+  background:rgba(0,229,255,.08);
+  border:1px solid rgba(0,229,255,.2);
+  border-radius:4px;padding:12px 20px;
+  text-align:center;margin:12px 0;
+}
+
+/* ═══════════════════════════════════════════════════
+   GLOSSARY
+═══════════════════════════════════════════════════ */
+.gloss-search{
+  width:100%;background:var(--navy3);
+  border:1px solid var(--border);border-radius:3px;
+  padding:11px 18px;color:var(--white);
+  font-family:'Barlow',sans-serif;font-size:.95rem;
+  outline:none;margin-bottom:20px;transition:.2s;
+}
+.gloss-search:focus{border-color:var(--cyan);}
+.gloss-search::placeholder{color:var(--gray2);}
+.gloss-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+  gap:10px;
+}
+.gi{
+  background:var(--navy3);border:1px solid var(--border);
+  border-radius:4px;padding:14px 16px;
+  cursor:pointer;transition:.2s;
+}
+.gi:hover{border-color:var(--cyan);}
+.gi.open .gi-def{display:block;}
+.gi.open .gi-toggle{transform:rotate(90deg);}
+.gi-top{display:flex;justify-content:space-between;align-items:flex-start;}
+.gi-en{font-family:'Share Tech Mono',monospace;font-size:.8rem;color:var(--cyan);margin-bottom:4px;}
+.gi-id{
+  font-family:'Barlow Condensed',sans-serif;
+  font-weight:700;font-size:.98rem;color:var(--white);
+  margin-bottom:4px;letter-spacing:.4px;
+}
+.gi-toggle{color:var(--gray);font-size:.8rem;transition:.3s;flex-shrink:0;}
+.gi-def{font-size:.8rem;color:var(--gray);display:none;margin-top:6px;border-top:1px solid var(--border2);padding-top:6px;line-height:1.6;}
+
+/* ═══════════════════════════════════════════════════
+   MODAL (Rich Popup)
+═══════════════════════════════════════════════════ */
+.modal-bg{
+  position:fixed;inset:0;background:rgba(0,0,0,.9);
+  z-index:9999;
+  display:flex;align-items:center;justify-content:center;
+  padding:16px;opacity:0;pointer-events:none;transition:.3s;
+}
+.modal-bg.open{opacity:1;pointer-events:all;}
+.modal-box{
+  background:var(--navy2);
+  border:1px solid var(--cyan);
+  border-radius:8px;
+  max-width:860px;width:100%;
+  max-height:90vh;overflow-y:auto;
+  transform:scale(.95) translateY(20px);transition:.3s;
+  box-shadow:var(--glow2),0 20px 60px rgba(0,0,0,.6);
+}
+.modal-bg.open .modal-box{transform:scale(1) translateY(0);}
+.modal-hdr{
+  padding:22px 26px 16px;
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:flex-start;justify-content:space-between;
+  gap:12px;position:sticky;top:0;background:var(--navy2);z-index:1;
+}
+.modal-title{
+  font-family:'Orbitron',sans-serif;font-size:1.1rem;color:var(--cyan);flex:1;
+}
+.modal-close{
+  background:none;border:1px solid var(--border);color:var(--gray);
+  width:30px;height:30px;border-radius:3px;cursor:pointer;
+  font-size:.9rem;display:flex;align-items:center;justify-content:center;
+  transition:.2s;flex-shrink:0;
+}
+.modal-close:hover{border-color:var(--red);color:var(--red);}
+.modal-body{padding:22px 26px;}
+
+/* Modal level tabs */
+.modal-lvls{display:flex;gap:6px;margin-bottom:18px;}
+.ml-tab{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:.78rem;font-weight:700;letter-spacing:.8px;
+  padding:6px 14px;border-radius:3px;
+  border:1px solid var(--border);
+  color:var(--gray);background:var(--navy3);
+  cursor:pointer;transition:.2s;text-transform:uppercase;
+}
+.ml-tab:hover{border-color:var(--cyan);color:var(--cyan);}
+.ml-tab.active{color:var(--navy);background:var(--cyan);border-color:var(--cyan);}
+.ml-pane{display:none;}
+.ml-pane.active{display:block;}
+.msec{margin-bottom:16px;}
+.msec h4{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:.82rem;font-weight:700;letter-spacing:2px;
+  color:var(--gold);text-transform:uppercase;
+  margin-bottom:8px;border-bottom:1px solid rgba(255,214,0,.15);
+  padding-bottom:5px;
+}
+.msec p,.msec li{font-size:.88rem;color:var(--gray);margin-bottom:5px;line-height:1.7;}
+.msec ul{padding-left:16px;}
+.msym{
+  background:var(--navy4);border:1px solid var(--border);
+  border-radius:4px;padding:20px;
+  display:flex;flex-direction:column;align-items:center;
+  gap:8px;margin-bottom:16px;
+}
+.msym svg{width:90px;height:90px;}
+.msym-lbl{font-family:'Share Tech Mono',monospace;font-size:.65rem;color:var(--gray);letter-spacing:1px;}
+.mflow{
+  background:var(--navy4);border:1px solid var(--border);
+  border-radius:4px;padding:14px;
+  font-family:'Share Tech Mono',monospace;
+  font-size:.82rem;color:var(--cyan);
+  text-align:center;margin:12px 0;line-height:1.8;
+}
+.mlink{
+  display:inline-flex;align-items:center;gap:6px;
+  font-family:'Share Tech Mono',monospace;font-size:.7rem;
+  color:var(--cyan);border:1px solid rgba(0,229,255,.3);
+  padding:5px 12px;border-radius:2px;text-decoration:none;
+  transition:.2s;margin-top:6px;
+}
+.mlink:hover{background:rgba(0,229,255,.08);}
+
+/* ═══════════════════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════════════════ */
+footer{
+  background:var(--navy2);
+  border-top:1px solid var(--border);
+  padding:50px 20px 30px;
+  text-align:center;
+}
+.foot-brand{
+  font-family:'Orbitron',sans-serif;
+  font-size:1.1rem;color:var(--cyan);margin-bottom:8px;
+}
+.foot-name{
+  font-family:'Share Tech Mono',monospace;
+  font-size:.9rem;color:var(--gold);margin-bottom:6px;
+}
+.foot-title{font-size:.82rem;color:var(--gray);margin-bottom:6px;}
+.foot-inst{font-size:.8rem;color:var(--gray);margin-bottom:24px;}
+.foot-quote{
+  max-width:700px;margin:0 auto 28px;
+  font-size:.88rem;color:var(--gray2);
+  font-style:italic;line-height:1.8;
+  border-left:2px solid var(--cyan);
+  padding:12px 20px;text-align:left;
+}
+.foot-tags{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:24px;}
+.foot-tag{
+  font-family:'Share Tech Mono',monospace;font-size:.68rem;
+  padding:3px 10px;border-radius:2px;
+  border:1px solid var(--border);color:var(--gray);
+}
+.foot-copy{font-size:.72rem;color:var(--gray3);}
+
+/* ═══════════════════════════════════════════════════
+   INFO CARDS & MISC
+═══════════════════════════════════════════════════ */
+.info-card{
+  background:var(--navy3);border:1px solid var(--border);
+  border-radius:6px;padding:22px;
+  position:relative;overflow:hidden;
+}
+.info-card.cyn{border-top:3px solid var(--cyan);}
+.info-card.gld{border-top:3px solid var(--gold);}
+.info-card.red{border-top:3px solid var(--red);}
+.info-card.grn{border-top:3px solid var(--green);}
+.ic-title{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:1.05rem;font-weight:700;letter-spacing:.8px;
+  text-transform:uppercase;margin-bottom:10px;
+}
+.ic-title.cyn{color:var(--cyan);}
+.ic-title.gld{color:var(--gold);}
+.ic-title.red{color:var(--red);}
+.ic-title.grn{color:var(--green);}
+
+/* COMPARE TABLE */
+.cmp-table{width:100%;border-collapse:collapse;margin-top:20px;}
+.cmp-table th{
+  background:rgba(0,229,255,.1);
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:.85rem;font-weight:700;letter-spacing:1.5px;
+  color:var(--cyan);text-transform:uppercase;
+  padding:12px 16px;border-bottom:2px solid var(--cyan);text-align:left;
+}
+.cmp-table td{
+  padding:10px 16px;
+  border-bottom:1px solid rgba(255,255,255,.05);
+  font-size:.86rem;color:var(--gray);
+  vertical-align:top;
+}
+.cmp-table tr:hover td{background:rgba(0,229,255,.02);}
+.td-h{color:rgba(79,195,247,1);font-weight:600;}
+.td-p{color:rgba(255,213,79,1);font-weight:600;}
+
+/* Two-col grid */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;}
+.g4{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px;}
+@media(max-width:768px){.g2,.g3{grid-template-columns:1fr;}}
+
+/* FADE IN */
+.fi{opacity:0;transform:translateY(20px);transition:opacity .6s,transform .6s;}
+.fi.vis{opacity:1;transform:none;}
+
+/* RESPONSIVE */
+@media(max-width:1000px){
+  nav.main-nav{display:none;}
+  .hbg{display:flex;}
+  nav.main-nav.open{
+    display:flex;flex-direction:column;
+    position:fixed;top:62px;left:0;right:0;
+    background:rgba(2,12,24,.98);
+    padding:14px 20px;border-bottom:1px solid var(--border);
+    backdrop-filter:blur(12px);z-index:8998;
+  }
+  .hdr-badge{display:none;}
+}
+@media(max-width:600px){
+  .modal-body{padding:14px 16px;}
+  .modal-hdr{padding:14px 16px 12px;}
+  .sec{padding:60px 16px;}
+}
+</style>
+</head>
+<body>
+
+<div id="pbar"></div>
+
+<!-- ═══════════════ HEADER ═══════════════ -->
+<header>
+  <div class="hdr-inner">
+    <a class="logo-wrap" href="#hero">
+      <div class="logo-icon">⚙</div>
+      <div>
+        <div class="logo-text">HYDRO<span>PNEUMATIC</span></div>
+        <span class="logo-sub">MARINE ENGINEERING LEARNING PLATFORM</span>
+      </div>
+    </a>
+    <nav class="main-nav" id="mainNav">
+      <a href="#hero">Home</a>
+      <a href="#pohon">Pohon Ilmu</a>
+      <a href="#roadmap">Roadmap</a>
+      <a href="#komponen">Komponen</a>
+      <a href="#flow">Alur Sistem</a>
+      <a href="#kasus">Studi Kasus</a>
+      <a href="#level">Level Mode</a>
+      <a href="#ts">Troubleshoot</a>
+      <a href="#faq">FAQ</a>
+      <a href="#sim">Simulasi</a>
+      <a href="#glos">Glosarium</a>
+    </nav>
+    <div class="hdr-badge"><div class="live-dot"></div>PLATFORM AKTIF 2026</div>
+    <div class="hbg" onclick="toggleNav()"><span></span><span></span><span></span></div>
+  </div>
+</header>
+
+<!-- ═══════════════ HERO ═══════════════ -->
+<section id="hero">
+  <div class="grid-bg"></div>
+  <div class="hero-particles" id="particles"></div>
+  <span class="hero-klass">POLITEKNIK PELAYARAN SURABAYA · UNIVERSITAS HANG TUAH · MARITIM GLOBAL</span>
+  <h1 class="hero-h1">
+    <span class="t1">HYDRAULIC</span> <span class="t2">&</span> <span class="t1">PNEUMATIC</span>
+    <span class="t3">SYSTEM DI KAPAL — Akar dan Cabang dari Mechanical–Electrical–Control System</span>
+  </h1>
+  <p class="hero-sub">Marine Engineering Learning Platform | Rafael Sukirno, CE</p>
+  <p class="hero-desc">Platform pembelajaran komprehensif untuk Taruna Poltekpel, Mahasiswa Teknik Perkapalan, dan Praktisi Maritim Global. Dari teori dasar hingga siap PRALA dan bekerja di kapal nyata.</p>
+  <div class="sem-row">
+    <span class="sem-chip s1">🟢 Sem 3–4: Basic</span>
+    <span class="sem-chip s2">🟡 Sem 5–6: System</span>
+    <span class="sem-chip s3">🔴 Sem 7: Integrasi</span>
+    <span class="sem-chip s4">⚫ Sem 8: Engineer</span>
+  </div>
+  <div class="hero-stats">
+    <div class="hstat"><div class="hstat-n">12+</div><div class="hstat-l">Modul Lengkap</div></div>
+    <div class="hstat"><div class="hstat-n">40+</div><div class="hstat-l">Komponen ISO</div></div>
+    <div class="hstat"><div class="hstat-n">6</div><div class="hstat-l">Studi Kasus Kapal</div></div>
+    <div class="hstat"><div class="hstat-n">3</div><div class="hstat-l">Level Keahlian</div></div>
+    <div class="hstat"><div class="hstat-n">50+</div><div class="hstat-l">Istilah Teknis</div></div>
+  </div>
+  <div class="cta-row">
+    <a href="#roadmap" class="btn-cta">Mulai Belajar →</a>
+    <a href="#ts" class="btn-out">Troubleshooting</a>
+  </div>
+</section>
+
+<hr class="sep">
+
+<!-- ═══════════════ POHON PENGETAHUAN ═══════════════ -->
+<section class="sec" id="pohon">
+  <span class="slbl">MODUL 01 — FONDASI ILMU</span>
+  <h2 class="stitle">Pohon Pengetahuan <span>Teknika Kapal</span></h2>
+  <div class="divr"></div>
+  <p class="sdesc">Hydraulic & Pneumatic adalah cabang utama dari pohon ilmu teknika kapal. Pahami strukturnya sebelum masuk ke detail sistem.</p>
+  <div class="tree-wrap">
+    <div class="tree-node root fi" onclick="openModal('physics')">
+      <span class="tn-icon">🌱</span>
+      <span class="tn-cat">AKAR — FONDASI FISIKA</span>
+      <div class="tn-title">Basic Physics & Engineering</div>
+      <div class="tn-body">Tekanan, aliran, gaya, energi. Hukum Pascal, Bernoulli, termodinamika dasar. Fondasi mutlak sebelum belajar sistem apapun di kapal.</div>
+    </div>
+    <div class="tree-node root fi" onclick="openModal('elec_basic')">
+      <span class="tn-icon">⚡</span>
+      <span class="tn-cat">AKAR — FONDASI LISTRIK</span>
+      <div class="tn-title">Electrical Dasar</div>
+      <div class="tn-body">Arus, tegangan, resistansi. Relay, solenoid, kontaktor. Dasar PLC dan kontrol listrik yang terintegrasi dengan sistem hidraulik/pneumatik.</div>
+    </div>
+    <div class="tree-node trunk fi" onclick="openModal('mpu')">
+      <span class="tn-icon">🚢</span>
+      <span class="tn-cat">BATANG — MESIN PENGGERAK UTAMA</span>
+      <div class="tn-title">MPU & Sistem Permesinan</div>
+      <div class="tn-body">Mesin diesel 2-tak dan 4-tak. Turbocharger, governor, fuel system. HPU sebagai sumber tenaga hidraulik seluruh sistem di kapal.</div>
+    </div>
+    <div class="tree-node trunk fi" onclick="openModal('elec_sys')">
+      <span class="tn-icon">🔌</span>
+      <span class="tn-cat">BATANG — ELECTRICAL SYSTEM</span>
+      <div class="tn-title">Sistem Kelistrikan Kapal</div>
+      <div class="tn-body">Generator, switchboard, motor listrik. Solenoid control, PLC integration. Listrik sebagai pengontrol sistem hidraulik dan pneumatik modern.</div>
+    </div>
+    <div class="tree-node branch fi" onclick="openModal('hydraulic')">
+      <span class="tn-icon">💧</span>
+      <span class="tn-cat">CABANG UTAMA — INTI WEBSITE</span>
+      <div class="tn-title">Hydraulic System</div>
+      <div class="tn-body">Media: oli bertekanan tinggi (100–350 bar). Menghasilkan gaya linear dan rotasi sangat besar. Drive system utama crane, winch, steering gear, hatch cover.</div>
+    </div>
+    <div class="tree-node branch fi" onclick="openModal('pneumatic')">
+      <span class="tn-icon">💨</span>
+      <span class="tn-cat">CABANG UTAMA — INTI WEBSITE</span>
+      <div class="tn-title">Pneumatic System</div>
+      <div class="tn-body">Media: udara terkompresi (4–30 bar). Gerakan cepat dan bersih. Air starter mesin induk, instrument air, control valve, dan safety system.</div>
+    </div>
+    <div class="tree-node leaf fi" onclick="openModal('steering')">
+      <span class="tn-icon">🚢</span>
+      <span class="tn-cat">DAUN — APLIKASI NYATA</span>
+      <div class="tn-title">Steering Gear System</div>
+      <div class="tn-body">Sistem kemudi kapal. RAM hydraulic cylinder menggerakkan rudder. SOLAS: dua pompa independen, kemudi 35°→35° dalam 28 detik.</div>
+    </div>
+    <div class="tree-node leaf fi" onclick="openModal('winch')">
+      <span class="tn-icon">⚓</span>
+      <span class="tn-cat">DAUN — APLIKASI NYATA</span>
+      <div class="tn-title">Deck Machinery — Winch & Crane</div>
+      <div class="tn-body">Mooring winch 20 ton, deck crane 25 ton. HPU Wärtsilä, orbital motor, counterbalance valve. Aplikasi nyata sistem hidraulik di dek kapal.</div>
+    </div>
+    <div class="tree-node leaf fi" onclick="openModal('airstart')">
+      <span class="tn-icon">🔥</span>
+      <span class="tn-cat">DAUN — APLIKASI NYATA</span>
+      <div class="tn-title">Starting Air System</div>
+      <div class="tn-body">Sistem starting mesin induk menggunakan udara 25–30 bar. Air receiver 1000L. SOLAS: minimal 12× starting. Sistem pneumatik paling kritis di kapal.</div>
+    </div>
+    <div class="tree-node trunk fi" onclick="openModal('compare')">
+      <span class="tn-icon">⚖️</span>
+      <span class="tn-cat">PERBANDINGAN SISTEM</span>
+      <div class="tn-title">Hydraulic vs Pneumatic — Mirip tapi Berbeda</div>
+      <div class="tn-body">Prinsip sama (transmisi daya fluida), media berbeda. Solenoid sama tapi fungsi berbeda. Simbol ISO berbeda konteks. Di kapal keduanya digunakan bersamaan.</div>
+    </div>
+  </div>
+</section>
+
+<hr class="sep">
+
+<!-- ═══════════════ ROADMAP ═══════════════ -->
+<div class="sec-full" id="roadmap">
+<div class="sec-inner">
+  <span class="slbl">MODUL 02 — PETA BELAJAR</span>
+  <h2 class="stitle">Roadmap <span>Pembelajaran Semester 3–8</span></h2>
+  <div class="divr"></div>
+  <p class="sdesc">Kurikulum terstruktur dari operator level hingga engineer level, siap PRALA dan bekerja di kapal global.</p>
+  <div class="roadmap-tabs">
+    <button class="rm-tab active" onclick="showRM('s34',this)">🟢 Sem 3–4</button>
+    <button class="rm-tab" onclick="showRM('s56',this)">🟡 Sem 5–6</button>
+    <button class="rm-tab" onclick="showRM('s7',this)">🔴 Sem 7</button>
+    <button class="rm-tab" onclick="showRM('s8',this)">⚫ Sem 8</button>
+  </div>
+
+  <div class="rm-panel active" id="rm-s34">
+    <div class="rm-card"><div class="rm-num" style="color:var(--green)">01</div><span class="rm-tag" style="background:rgba(0,230,118,.1);color:var(--green);border:1px solid rgba(0,230,118,.3)">BASIC</span><div class="rm-title">Dasar Hydraulic & Pneumatic</div><ul class="rm-list"><li>Pengertian hydraulic & pneumatic</li><li>Perbedaan utama dan kesamaan</li><li>Pressure, Flow, Force, Pascal Law</li><li>Diagram sistem sederhana</li></ul></div>
+    <div class="rm-card"><div class="rm-num" style="color:var(--green)">02</div><span class="rm-tag" style="background:rgba(0,230,118,.1);color:var(--green);border:1px solid rgba(0,230,118,.3)">BASIC</span><div class="rm-title">Simbol ISO 1219</div><ul class="rm-list"><li>Standar simbol internasional</li><li>Pump & Compressor symbol</li><li>Valve & actuator symbol</li><li>Membaca diagram dasar</li></ul></div>
+    <div class="rm-card"><div class="rm-num" style="color:var(--green)">03</div><span class="rm-tag" style="background:rgba(0,230,118,.1);color:var(--green);border:1px solid rgba(0,230,118,.3)">BASIC</span><div class="rm-title">Komponen Dasar</div><ul class="rm-list"><li>Pompa dan kompressor</li><li>Reservoir & air receiver</li><li>Filter & FRL unit</li><li>Cylinder & motor</li></ul></div>
+    <div class="rm-card"><div class="rm-num" style="color:var(--green)">04</div><span class="rm-tag" style="background:rgba(0,230,118,.1);color:var(--green);border:1px solid rgba(0,230,118,.3)">BASIC</span><div class="rm-title">Safety Awareness</div><ul class="rm-list"><li>LOTO procedure</li><li>APD wajib</li><li>Bahaya sistem bertekanan</li><li>SOLAS & Class requirement</li></ul></div>
+  </div>
+
+  <div class="rm-panel" id="rm-s56">
+    <div class="rm-card"><div class="rm-num" style="color:var(--gold)">05</div><span class="rm-tag" style="background:rgba(255,214,0,.1);color:var(--gold);border:1px solid rgba(255,214,0,.3)">SYSTEM</span><div class="rm-title">HPU — Hydraulic Power Unit</div><ul class="rm-list"><li>Pompa vane, gear, piston</li><li>Reservoir & accumulator</li><li>Oil cooler & filter system</li><li>Pressure & flow measurement</li></ul></div>
+    <div class="rm-card"><div class="rm-num" style="color:var(--gold)">06</div><span class="rm-tag" style="background:rgba(255,214,0,.1);color:var(--gold);border:1px solid rgba(255,214,0,.3)">SYSTEM</span><div class="rm-title">Compressor System</div><ul class="rm-list"><li>Piston & screw compressor</li><li>Air receiver sizing & SOLAS</li><li>Aftercooler & dryer</li><li>Instrument air quality</li></ul></div>
+    <div class="rm-card"><div class="rm-num" style="color:var(--gold)">07</div><span class="rm-tag" style="background:rgba(255,214,0,.1);color:var(--gold);border:1px solid rgba(255,214,0,.3)">SYSTEM</span><div class="rm-title">Valve & Actuator</div><ul class="rm-list"><li>DCV: 3/2, 4/2, 4/3, 5/2</li><li>Relief, regulator, check valve</li><li>Single & double acting cylinder</li><li>Hydraulic motor (orbital, piston)</li></ul></div>
+    <div class="rm-card"><div class="rm-num" style="color:var(--gold)">08</div><span class="rm-tag" style="background:rgba(255,214,0,.1);color:var(--gold);border:1px solid rgba(255,214,0,.3)">SYSTEM</span><div class="rm-title">Basic Control System</div><ul class="rm-list"><li>Manual control</li><li>Solenoid valve control</li><li>Pilot control circuit</li><li>Sequence control dasar</li></ul></div>
+  </div>
+
+  <div class="rm-panel" id="rm-s7">
+    <div class="rm-card"><div class="rm-num" style="color:var(--orange)">09</div><span class="rm-tag" style="background:rgba(255,109,0,.1);color:var(--orange);border:1px solid rgba(255,109,0,.3)">INTEGRATION</span><div class="rm-title">Electro-Hydraulic System</div><ul class="rm-list"><li>PLC control hydraulic</li><li>Proportional & servo valve</li><li>Electro-hydraulic steering</li><li>Remote control system</li></ul></div>
+    <div class="rm-card"><div class="rm-num" style="color:var(--orange)">10</div><span class="rm-tag" style="background:rgba(255,109,0,.1);color:var(--orange);border:1px solid rgba(255,109,0,.3)">INTEGRATION</span><div class="rm-title">Electro-Pneumatic System</div><ul class="rm-list"><li>PLC + solenoid valve</li><li>Sequence pneumatic control</li><li>Sensor & feedback system</li><li>Automation circuit</li></ul></div>
+    <div class="rm-card"><div class="rm-num" style="color:var(--orange)">11</div><span class="rm-tag" style="background:rgba(255,109,0,.1);color:var(--orange);border:1px solid rgba(255,109,0,.3)">INTEGRATION</span><div class="rm-title">Steering Gear System</div><ul class="rm-list"><li>RAM vs Rotary type</li><li>Follow-up & NFU mode</li><li>SOLAS requirement</li><li>Emergency steering</li></ul></div>
+    <div class="rm-card"><div class="rm-num" style="color:var(--orange)">12</div><span class="rm-tag" style="background:rgba(255,109,0,.1);color:var(--orange);border:1px solid rgba(255,109,0,.3)">INTEGRATION</span><div class="rm-title">Sequence & Safety Control</div><ul class="rm-list"><li>Interlock system</li><li>Safety circuit</li><li>Alarm & shutdown</li><li>Redundancy system</li></ul></div>
+  </div>
+
+  <div class="rm-panel" id="rm-s8">
+    <div class="rm-card"><div class="rm-num" style="color:var(--red)">13</div><span class="rm-tag" style="background:rgba(255,68,68,.1);color:var(--red);border:1px solid rgba(255,68,68,.3)">ENGINEER</span><div class="rm-title">Troubleshooting Real Case</div><ul class="rm-list"><li>Systematic diagnosis method</li><li>SOLVE framework</li><li>Case study nyata kapal</li><li>Preventive maintenance</li></ul></div>
+    <div class="rm-card"><div class="rm-num" style="color:var(--red)">14</div><span class="rm-tag" style="background:rgba(255,68,68,.1);color:var(--red);border:1px solid rgba(255,68,68,.3)">ENGINEER</span><div class="rm-title">Analisa & Perhitungan</div><ul class="rm-list"><li>Pressure & force calculation</li><li>Flow rate & cylinder speed</li><li>System efficiency analysis</li><li>Report writing standard</li></ul></div>
+    <div class="rm-card"><div class="rm-num" style="color:var(--red)">15</div><span class="rm-tag" style="background:rgba(255,68,68,.1);color:var(--red);border:1px solid rgba(255,68,68,.3)">ENGINEER</span><div class="rm-title">Deck Machinery System</div><ul class="rm-list"><li>Mooring winch HPU</li><li>Deck crane hydraulic</li><li>Anchor windlass</li><li>Hatch cover actuation</li></ul></div>
+    <div class="rm-card"><div class="rm-num" style="color:var(--red)">16</div><span class="rm-tag" style="background:rgba(255,68,68,.1);color:var(--red);border:1px solid rgba(255,68,68,.3)">PRALA READY</span><div class="rm-title">PRALA Preparation</div><ul class="rm-list"><li>Engine room procedure</li><li>Log book & documentation</li><li>STCW competency</li><li>Interview preparation</li></ul></div>
+  </div>
+</div>
+</div>
+
+<hr class="sep">
+
+<!-- ═══════════════ KOMPONEN ═══════════════ -->
+<section class="sec" id="komponen">
+  <span class="slbl">MODUL 03 — KLIK KARTU UNTUK DETAIL POPUP</span>
+  <h2 class="stitle">Simbol & <span>Komponen ISO 1219</span></h2>
+  <div class="divr"></div>
+  <p class="sdesc">Standar simbol internasional untuk sistem hidraulik dan pneumatik. Setiap kartu menampilkan simbol ISO, fungsi, cara kerja, dan aplikasi di kapal.</p>
+
+  <div class="comp-filter">
+    <button class="cf-btn active" onclick="filterComp('all',this)">Semua</button>
+    <button class="cf-btn" onclick="filterComp('tenaga',this)">Sumber Tenaga</button>
+    <button class="cf-btn" onclick="filterComp('kontrol',this)">Control Valve</button>
+    <button class="cf-btn" onclick="filterComp('tekanan',this)">Pressure</button>
+    <button class="cf-btn" onclick="filterComp('aliran',this)">Flow Control</button>
+    <button class="cf-btn" onclick="filterComp('aktuator',this)">Aktuator</button>
+    <button class="cf-btn" onclick="filterComp('khusus',this)">Pneumatik Khusus</button>
+  </div>
+
+  <div class="comp-grid" id="compGrid"></div>
+
+  <!-- Comparison Table -->
+  <div style="margin-top:40px;">
+    <span class="slbl">PERBANDINGAN</span>
+    <h3 style="font-family:'Orbitron',sans-serif;font-size:1.1rem;margin-bottom:6px;">Hydraulic <span style="color:var(--cyan)">vs</span> Pneumatic — Mirip, Tapi Tidak Sama</h3>
+    <div class="divr"></div>
+    <div style="overflow-x:auto;">
+    <table class="cmp-table">
+      <thead><tr><th>PARAMETER</th><th>HIDRAULIK 💧</th><th>PNEUMATIK 💨</th></tr></thead>
+      <tbody>
+        <tr><td>Media Kerja</td><td class="td-h">Oli / Fluida Cair</td><td class="td-p">Udara Terkompresi</td></tr>
+        <tr><td>Tekanan Kerja</td><td class="td-h">100 – 350 bar</td><td class="td-p">4 – 8 bar (start: 30 bar)</td></tr>
+        <tr><td>Kecepatan Gerakan</td><td class="td-h">Lambat – Sedang, Presisi</td><td class="td-p">Sangat Cepat, Responsif</td></tr>
+        <tr><td>Gaya Output</td><td class="td-h">Sangat Besar (crane, winch)</td><td class="td-p">Sedang (kontrol, starting)</td></tr>
+        <tr><td>Kontaminasi</td><td class="td-h">Risiko kebocoran oli</td><td class="td-p">Bersih — hanya udara</td></tr>
+        <tr><td>Solenoid</td><td class="td-h">Prinsip sama, tekanan tinggi</td><td class="td-p">Prinsip sama, response cepat</td></tr>
+        <tr><td>Simbol DCV</td><td class="td-h">ISO 1219-1 (hidraulik)</td><td class="td-p">ISO 1219-2 (pneumatik)</td></tr>
+        <tr><td>Aplikasi Kapal</td><td class="td-h">Steering, crane, winch, hatch</td><td class="td-p">Air start, control, instrument</td></tr>
+        <tr><td>Kenapa Perlu Dua-Duanya?</td><td colspan="2" style="color:var(--cyan);font-weight:600;">Di kapal modern, keduanya terintegrasi dalam satu sistem kontrol. Listrik mengontrol keduanya!</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+</section>
+
+<hr class="sep">
+
+<!-- ═══════════════ SYSTEM FLOW ═══════════════ -->
+<div class="sec-full" id="flow">
+<div class="sec-inner">
+  <span class="slbl">MODUL 04 — ALUR SISTEM INTERAKTIF</span>
+  <h2 class="stitle">System Flow — <span>Diagram Alur Sistem</span></h2>
+  <div class="divr"></div>
+  <p class="sdesc">Ikuti aliran fluida dari sumber tenaga hingga aktuator. Klik setiap blok untuk penjelasan. Panah bergerak = arah aliran nyata.</p>
+
+  <div class="flow-tabs">
+    <button class="ft active" onclick="showFlow('hyd',this)">💧 Sistem Hidraulik</button>
+    <button class="ft" onclick="showFlow('pneu',this)">💨 Sistem Pneumatik</button>
+    <button class="ft" onclick="showFlow('electro',this)">⚡ Electro-Hydraulic</button>
+  </div>
+
+  <!-- HYDRAULIC FLOW -->
+  <div class="flow-panel active" id="fl-hyd">
+    <div class="flow-diagram">
+      <div class="flow-chain">
+        <div class="fn"><div class="fb" onclick="openFlowModal('reservoir')">RESERVOIR<br>TANK</div><div class="fs">Tangki Oli</div></div>
+        <div class="farr">→</div>
+        <div class="fn"><div class="fb" onclick="openFlowModal('hpump')">HYDRAULIC<br>PUMP</div><div class="fs">Sumber Tekanan</div></div>
+        <div class="farr">→</div>
+        <div class="fn"><div class="fb gld" onclick="openFlowModal('filter_h')">FILTER +<br>RELIEF VLV</div><div class="fs">Proteksi Sistem</div></div>
+        <div class="farr gld">→</div>
+        <div class="fn"><div class="fb gld" onclick="openFlowModal('check_h')">CHECK<br>VALVE</div><div class="fs">Cegah Backflow</div></div>
+        <div class="farr gld">→</div>
+        <div class="fn"><div class="fb gld" onclick="openFlowModal('dcv')">DCV<br>4/3 WAY</div><div class="fs">Port P,A,B,T</div></div>
+        <div class="farr" style="color:var(--green)">→</div>
+        <div class="fn"><div class="fb grn" onclick="openFlowModal('fcv')">FLOW CTRL<br>VALVE</div><div class="fs">Atur Kecepatan</div></div>
+        <div class="farr" style="color:var(--green)">→</div>
+        <div class="fn"><div class="fb grn" onclick="openFlowModal('cyl')">HYDRAULIC<br>CYLINDER</div><div class="fs">Output Mekanik</div></div>
+      </div>
+      <div class="port-row">
+        <span class="pb pb-p">P = Pressure (Suplai dari Pompa)</span>
+        <span class="pb pb-a">A = Output → Cylinder MAJU</span>
+        <span class="pb pb-b">B = Output → Cylinder MUNDUR</span>
+        <span class="pb pb-t">T = Tank / Return ke Reservoir</span>
+      </div>
+      <div class="cyl-anim">
+        <div style="font-family:'Share Tech Mono',monospace;font-size:.68rem;color:var(--gray);margin-bottom:8px;">🎬 ANIMASI LIVE — Double Acting Cylinder</div>
+        <div class="cyl-stage">
+          <div class="cyl-body">
+            <div class="cyl-piston"></div>
+            <div class="fluid-in"></div>
+          </div>
+          <div class="cyl-rod"></div>
+        </div>
+        <div style="font-size:.75rem;color:var(--gray);font-family:'Share Tech Mono',monospace;">Piston maju-mundur → gerakan linear mekanik (crane, steering, hatch)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PNEUMATIC FLOW -->
+  <div class="flow-panel" id="fl-pneu">
+    <div class="flow-diagram">
+      <div class="flow-chain">
+        <div class="fn"><div class="fb gld" onclick="openFlowModal('compressor')">AIR<br>COMPRESSOR</div><div class="fs">7–30 bar</div></div>
+        <div class="farr gld">→</div>
+        <div class="fn"><div class="fb gld" onclick="openFlowModal('receiver')">AIR<br>RECEIVER</div><div class="fs">Botol Angin</div></div>
+        <div class="farr gld">→</div>
+        <div class="fn"><div class="fb gld" onclick="openFlowModal('dryer')">AFTER-<br>COOLER+DRYER</div><div class="fs">Pendingin & Pengering</div></div>
+        <div class="farr gld">→</div>
+        <div class="fn"><div class="fb gld" onclick="openFlowModal('frl')">FRL<br>UNIT</div><div class="fs">Filter-Reg-Lub</div></div>
+        <div class="farr" style="color:var(--green)">→</div>
+        <div class="fn"><div class="fb grn" onclick="openFlowModal('sol_p')">SOLENOID<br>DCV 5/2</div><div class="fs">Kontrol Arah</div></div>
+        <div class="farr" style="color:var(--green)">→</div>
+        <div class="fn"><div class="fb grn" onclick="openFlowModal('pneu_cyl')">PNEUMATIC<br>CYLINDER</div><div class="fs">Output Mekanik</div></div>
+      </div>
+      <div class="port-row">
+        <span class="pb pb-p">P = Supply dari Kompressor (7–8 bar)</span>
+        <span class="pb pb-a">A = Cylinder sisi depan → MAJU</span>
+        <span class="pb pb-b">B = Cylinder sisi belakang → MUNDUR</span>
+        <span class="pb pb-t">R/T = Exhaust (Udara Buang ke Atmosfer)</span>
+      </div>
+      <div style="background:rgba(255,214,0,0.06);border:1px solid rgba(255,214,0,0.3);border-radius:4px;padding:16px;margin-top:16px;">
+        <div style="font-family:'Orbitron',sans-serif;font-size:.85rem;color:var(--gold);margin-bottom:10px;">⚡ RANTAI KONTROL — Push Button → Cylinder</div>
+        <div style="display:flex;align-items:center;flex-wrap:wrap;gap:6px;">
+          <span style="background:rgba(0,229,255,.1);border:1px solid var(--cyan);border-radius:3px;padding:6px 12px;font-family:'Barlow Condensed',sans-serif;font-size:.82rem;color:var(--cyan);font-weight:700;">SENSOR / PUSH BUTTON</span>
+          <span style="color:var(--cyan);font-size:1.2rem;">⟶</span>
+          <span style="background:rgba(206,147,216,.1);border:1px solid var(--purple);border-radius:3px;padding:6px 12px;font-family:'Barlow Condensed',sans-serif;font-size:.82rem;color:var(--purple);font-weight:700;">PLC / RELAY</span>
+          <span style="color:var(--purple);font-size:1.2rem;">⟶</span>
+          <span style="background:rgba(255,214,0,.1);border:1px solid var(--gold);border-radius:3px;padding:6px 12px;font-family:'Barlow Condensed',sans-serif;font-size:.82rem;color:var(--gold);font-weight:700;">SOLENOID COIL</span>
+          <span style="color:var(--gold);font-size:1.2rem;">⟶</span>
+          <span style="background:rgba(0,229,255,.1);border:1px solid var(--cyan);border-radius:3px;padding:6px 12px;font-family:'Barlow Condensed',sans-serif;font-size:.82rem;color:var(--cyan);font-weight:700;">DCV SPOOL</span>
+          <span style="color:var(--cyan);font-size:1.2rem;">⟶</span>
+          <span style="background:rgba(0,230,118,.1);border:1px solid var(--green);border-radius:3px;padding:6px 12px;font-family:'Barlow Condensed',sans-serif;font-size:.82rem;color:var(--green);font-weight:700;">CYLINDER BERGERAK</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ELECTRO-HYDRAULIC -->
+  <div class="flow-panel" id="fl-electro">
+    <div class="flow-diagram">
+      <div style="font-family:'Orbitron',sans-serif;font-size:.9rem;color:var(--cyan);margin-bottom:20px;">⚡ ELECTRO-HYDRAULIC STEERING GEAR SYSTEM</div>
+      <div class="flow-chain">
+        <div class="fn"><div class="fb" onclick="openFlowModal('bridge')">BRIDGE<br>TELEGRAPH</div><div class="fs">Sinyal Helm</div></div>
+        <div class="farr">→</div>
+        <div class="fn"><div class="fb" onclick="openFlowModal('plc_sg')">PLC /<br>CONTROLLER</div><div class="fs">Kontroller Utama</div></div>
+        <div class="farr">→</div>
+        <div class="fn"><div class="fb gld" onclick="openFlowModal('prop_valve')">PROPORTIONAL<br>VALVE</div><div class="fs">Kontrol Halus</div></div>
+        <div class="farr gld">→</div>
+        <div class="fn"><div class="fb gld" onclick="openFlowModal('hpu_sg')">HPU<br>250 bar</div><div class="fs">Sumber Tekanan</div></div>
+        <div class="farr gld">→</div>
+        <div class="fn"><div class="fb grn" onclick="openFlowModal('ram_cyl')">RAM<br>CYLINDER</div><div class="fs">4× Double Acting</div></div>
+        <div class="farr" style="color:var(--green)">→</div>
+        <div class="fn"><div class="fb grn" onclick="openFlowModal('rudder')">RUDDER<br>MOVEMENT</div><div class="fs">35°→35° / 28 detik</div></div>
+        <div class="farr" style="color:var(--green)">→</div>
+        <div class="fn"><div class="fb grn" onclick="openFlowModal('rai')">RUDDER ANGLE<br>INDICATOR</div><div class="fs">Feedback ke PLC</div></div>
+      </div>
+      <div style="margin-top:16px;background:rgba(255,68,68,0.06);border:1px solid rgba(255,68,68,0.3);border-radius:4px;padding:14px;">
+        <div style="font-family:'Share Tech Mono',monospace;font-size:.72rem;color:var(--red);margin-bottom:8px;">⚠ SOLAS REQUIREMENT — STEERING GEAR</div>
+        <div style="display:flex;gap:20px;flex-wrap:wrap;">
+          <span style="font-size:.85rem;color:var(--gray);">▸ Dua pompa hidraulik independen WAJIB</span>
+          <span style="font-size:.85rem;color:var(--gray);">▸ Kemudi 35°→35° dalam 28 detik</span>
+          <span style="font-size:.85rem;color:var(--gray);">▸ Emergency steering dari steering gear room</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<hr class="sep">
+
+<!-- ═══════════════ CASE STUDY ═══════════════ -->
+<section class="sec" id="kasus">
+  <span class="slbl">MODUL 05 — APLIKASI NYATA DI KAPAL</span>
+  <h2 class="stitle">Studi Kasus <span>Kapal MV Nusantara Jaya</span></h2>
+  <div class="divr"></div>
+  <p class="sdesc">Implementasi nyata sistem hidraulik & pneumatik di MV Nusantara Jaya (50,000 DWT Bulk Carrier) — kapal referensi pembelajaran.</p>
+  <div class="case-tabs">
+    <button class="ct active" onclick="showCase('c1',this)">⚓ Mooring Winch</button>
+    <button class="ct" onclick="showCase('c2',this)">🏗️ Deck Crane</button>
+    <button class="ct" onclick="showCase('c3',this)">🚢 Steering Gear</button>
+    <button class="ct" onclick="showCase('c4',this)">💨 Air Starter</button>
+    <button class="ct" onclick="showCase('c5',this)">🚪 Hatch Cover</button>
+    <button class="ct" onclick="showCase('c6',this)">⛽ Fuel System</button>
+  </div>
+  <div id="casePanels"></div>
+</section>
+
+<hr class="sep">
+
+<!-- ═══════════════ LEVEL MODE ═══════════════ -->
+<div class="sec-full" id="level">
+<div class="sec-inner">
+  <span class="slbl">MODUL 06 — PILIH LEVEL KEAHLIANMU</span>
+  <h2 class="stitle">Mode <span>3 Level Keahlian</span></h2>
+  <div class="divr"></div>
+  <p class="sdesc">Setiap materi disajikan dalam 3 level: Basic (Taruna Baru), Intermediate (Taruna Senior), Advanced (Engineer). Pilih sesuai levelmu.</p>
+  <div class="level-switcher">
+    <button class="lv-btn active basic" onclick="showLevel('basic',this)">🟢 BASIC</button>
+    <button class="lv-btn inter" onclick="showLevel('inter',this)">🟡 INTERMEDIATE</button>
+    <button class="lv-btn adv" onclick="showLevel('adv',this)">🔴 ADVANCED</button>
+  </div>
+  <div class="lv-panel active" id="lv-basic">
+    <div class="lv-content basic">
+      <h3>🟢 LEVEL BASIC — Taruna Semester 3–4</h3>
+      <p style="color:var(--gray);font-size:.9rem;margin-bottom:16px;">Fokus pada pemahaman konsep dasar, mengenal komponen, dan safety awareness. Tidak perlu hitung-hitungan dulu.</p>
+      <div class="lv-grid">
+        <div class="lv-block">
+          <h4>Hydraulic Itu Apa?</h4>
+          <p>Sistem yang menggunakan oli bertekanan untuk menggerakkan sesuatu. Bayangkan rem mobil — saat kamu injak pedal, oli bertekanan mendorong kaliper rem. Di kapal, prinsipnya sama tapi jauh lebih besar dan lebih kuat!</p>
+        </div>
+        <div class="lv-block">
+          <h4>Pneumatic Itu Apa?</h4>
+          <p>Sistem yang menggunakan udara terkompresi. Seperti ban sepeda yang dipompa — udara bertekanan bisa mendorong benda. Di kapal, udara 30 bar digunakan untuk menghidupkan mesin induk!</p>
+        </div>
+        <div class="lv-block">
+          <h4>Apa Bedanya?</h4>
+          <ul>
+            <li>Hydraulic → Lebih KUAT (tekanan 100–350 bar)</li>
+            <li>Pneumatic → Lebih CEPAT (respon milidetik)</li>
+            <li>Hydraulic → pakai OLI, Pneumatic → pakai UDARA</li>
+            <li>Di kapal — keduanya dipakai bersamaan!</li>
+          </ul>
+        </div>
+        <div class="lv-block">
+          <h4>Hukum Pascal — Simpelnya</h4>
+          <p>Tekanan di semua titik dalam fluida tertutup adalah SAMA. Artinya: piston kecil bisa menggerakkan beban BESAR jika luas pistonnya lebih besar.</p>
+          <div class="formula">P = F ÷ A</div>
+          <p>P=tekanan, F=gaya, A=luas penampang</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="lv-panel" id="lv-inter">
+    <div class="lv-content inter">
+      <h3>🟡 LEVEL INTERMEDIATE — Taruna Semester 5–6</h3>
+      <p style="color:var(--gray);font-size:.9rem;margin-bottom:16px;">Fokus pada pemahaman sistem, membaca diagram, dan perhitungan dasar. Siap mengoperasikan dengan bimbingan.</p>
+      <div class="lv-grid">
+        <div class="lv-block">
+          <h4>Flow Tracing — Cara Membaca Diagram</h4>
+          <ul>
+            <li>Identifikasi sumber tenaga (pompa/kompressor)</li>
+            <li>Ikuti pressure line dari pompa ke valve</li>
+            <li>Baca posisi DCV — port mana yang terbuka</li>
+            <li>Ikuti aliran ke actuator — tentukan arah gerak</li>
+            <li>Identifikasi return line kembali ke reservoir</li>
+          </ul>
+        </div>
+        <div class="lv-block">
+          <h4>DCV — Directional Control Valve</h4>
+          <ul>
+            <li>4/3 Way: 4 port (P,A,B,T), 3 posisi</li>
+            <li>P→A: Cylinder MAJU (extend)</li>
+            <li>P→B: Cylinder MUNDUR (retract)</li>
+            <li>Posisi tengah: semua port tertutup</li>
+            <li>Aktuasi: solenoid, manual, atau pilot</li>
+          </ul>
+        </div>
+        <div class="lv-block">
+          <h4>Perhitungan Dasar Hydraulic</h4>
+          <div class="formula">F = P × A</div>
+          <p>Contoh: Cylinder Ø100mm, P = 200 bar</p>
+          <p>A = π × (0.05)² = 0.00785 m²</p>
+          <p>F = 200 × 10⁵ × 0.00785 = <strong style="color:var(--gold)">157,000 N = 157 kN</strong></p>
+          <p style="color:var(--cyan);margin-top:8px;">Gaya ≈ 16 ton! Dari tekanan saja.</p>
+        </div>
+        <div class="lv-block">
+          <h4>HPU — Hydraulic Power Unit</h4>
+          <ul>
+            <li>Pompa: menghasilkan FLOW (L/min)</li>
+            <li>Tekanan timbul karena HAMBATAN sistem</li>
+            <li>Relief valve: batasi tekanan maksimum</li>
+            <li>Oil cooler: jaga suhu oli <60°C</li>
+            <li>Filter: kebersihan oli kunci ketahanan sistem</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="lv-panel" id="lv-adv">
+    <div class="lv-content adv">
+      <h3>🔴 LEVEL ADVANCED — Semester 7–8 / Engineer</h3>
+      <p style="color:var(--gray);font-size:.9rem;margin-bottom:16px;">Fokus pada analisa sistem, troubleshooting mandiri, perhitungan lanjutan, dan standar industri internasional.</p>
+      <div class="lv-grid">
+        <div class="lv-block">
+          <h4>Electro-Hydraulic Integration</h4>
+          <ul>
+            <li>Proportional valve: sinyal 4–20mA → bukaan proporsional</li>
+            <li>Servo valve: akurasi tinggi, responsi <5ms</li>
+            <li>PLC closed-loop control: sensor → kontroller → valve</li>
+            <li>Rudder angle feedback: RAI → PLC → proportional valve</li>
+            <li>Redundancy: dual pump, dual controller, dual power</li>
+          </ul>
+        </div>
+        <div class="lv-block">
+          <h4>Analisa Sistem — Root Cause</h4>
+          <ul>
+            <li>Pressure drop analisa: pipa, fitting, viscosity</li>
+            <li>Volume efficiency pompa: Qa/Qth × 100%</li>
+            <li>Leakage coefficient: flow meter differential</li>
+            <li>Heat generation: ΔP × Q = power loss = heat</li>
+            <li>Contamination level: ISO 4406 cleanliness code</li>
+          </ul>
+        </div>
+        <div class="lv-block">
+          <h4>Perhitungan Lanjutan — Cylinder Speed</h4>
+          <div class="formula">v = Q / A</div>
+          <p>v = kecepatan piston (m/s)</p>
+          <p>Q = flow rate (m³/s) | A = luas piston (m²)</p>
+          <p style="margin-top:8px;">Contoh: Q=20 L/min, Ø=100mm</p>
+          <p>v = 0.000333 / 0.00785 = <strong style="color:var(--red)">0.042 m/s = 4.2 cm/s</strong></p>
+        </div>
+        <div class="lv-block">
+          <h4>Class & Flag State Requirements</h4>
+          <ul>
+            <li>SOLAS Ch.II-1: Steering gear requirement</li>
+            <li>ISO 4413 / ISO 4414: H&P safety standard</li>
+            <li>IMO MSC circular: PMS requirement</li>
+            <li>Class NK/BV/LR: survey & testing standard</li>
+            <li>STCW: competency matrix for 3rd engineer</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<hr class="sep">
+
+<!-- ═══════════════ TROUBLESHOOTING ═══════════════ -->
+<section class="sec" id="ts">
+  <span class="slbl">MODUL 07 — DIAGNOSA & SOLUSI PRAKTIS</span>
+  <h2 class="stitle">Troubleshooting <span>Mode</span></h2>
+  <div class="divr"></div>
+  <p class="sdesc">Panduan diagnosa masalah nyata di kapal. Menggunakan metode SOLVE — Systematic, Observable, Logical, Verified, Efficient.</p>
+
+  <!-- SOLVE Method -->
+  <div class="g2" style="margin-bottom:32px;">
+    <div class="info-card cyn">
+      <div class="ic-title cyn">⚙ Metode SOLVE — Diagnosa Sistematis</div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div style="display:flex;gap:10px;"><span style="background:var(--cyan);color:var(--navy);padding:3px 8px;border-radius:2px;font-family:'Orbitron',sans-serif;font-size:.8rem;font-weight:700;flex-shrink:0;">S</span><span style="font-size:.87rem;color:var(--gray);"><strong style="color:var(--white)">STOP</strong> — Hentikan operasi, pasang LOTO</span></div>
+        <div style="display:flex;gap:10px;"><span style="background:var(--cyan);color:var(--navy);padding:3px 8px;border-radius:2px;font-family:'Orbitron',sans-serif;font-size:.8rem;font-weight:700;flex-shrink:0;">O</span><span style="font-size:.87rem;color:var(--gray);"><strong style="color:var(--white)">OBSERVE</strong> — Amati gejala: suara, kebocoran, tekanan</span></div>
+        <div style="display:flex;gap:10px;"><span style="background:var(--cyan);color:var(--navy);padding:3px 8px;border-radius:2px;font-family:'Orbitron',sans-serif;font-size:.8rem;font-weight:700;flex-shrink:0;">L</span><span style="font-size:.87rem;color:var(--gray);"><strong style="color:var(--white)">LOCATE</strong> — Flow tracing, tentukan area masalah</span></div>
+        <div style="display:flex;gap:10px;"><span style="background:var(--cyan);color:var(--navy);padding:3px 8px;border-radius:2px;font-family:'Orbitron',sans-serif;font-size:.8rem;font-weight:700;flex-shrink:0;">V</span><span style="font-size:.87rem;color:var(--gray);"><strong style="color:var(--white)">VERIFY</strong> — Ukur: pressure gauge, multimeter</span></div>
+        <div style="display:flex;gap:10px;"><span style="background:var(--cyan);color:var(--navy);padding:3px 8px;border-radius:2px;font-family:'Orbitron',sans-serif;font-size:.8rem;font-weight:700;flex-shrink:0;">E</span><span style="font-size:.87rem;color:var(--gray);"><strong style="color:var(--white)">EVALUATE</strong> — Root cause, perbaiki, verifikasi lagi</span></div>
+      </div>
+    </div>
+    <div class="info-card red">
+      <div class="ic-title red">⚠ Safety WAJIB sebelum Bekerja</div>
+      <ul style="list-style:none;display:flex;flex-direction:column;gap:8px;">
+        <li style="font-size:.87rem;color:var(--gray);">🔒 Lock Out Tag Out (LOTO) semua sumber energi</li>
+        <li style="font-size:.87rem;color:var(--gray);">💯 Depressurize sistem — tekanan = 0 bar</li>
+        <li style="font-size:.87rem;color:var(--gray);">👓 Safety glasses, gloves, safety shoes</li>
+        <li style="font-size:.87rem;color:var(--gray);">📋 Hot work permit jika diperlukan</li>
+        <li style="font-size:.87rem;color:var(--gray);">🚨 Jangan bekerja sendirian di ruang mesin</li>
+        <li style="font-size:.87rem;color:var(--gray);">📌 Pasang tag di panel — "DALAM PERAWATAN"</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="ts-grid" id="tsGrid"></div>
+</section>
+
+<hr class="sep">
+
+<!-- ═══════════════ FAQ ═══════════════ -->
+<div class="sec-full" id="faq">
+<div class="sec-inner">
+  <span class="slbl">MODUL 08 — PERTANYAAN YANG SERING DITANYAKAN</span>
+  <h2 class="stitle">FAQ — <span>Tanya Jawab Teknis</span></h2>
+  <div class="divr"></div>
+  <div class="faq-list" id="faqList"></div>
+</div>
+</div>
+
+<hr class="sep">
+
+<!-- ═══════════════ SIMULASI ═══════════════ -->
+<section class="sec" id="sim">
+  <span class="slbl">MODUL 09 — SOFTWARE SIMULASI</span>
+  <h2 class="stitle">Tools <span>Simulasi</span></h2>
+  <div class="divr"></div>
+  <p class="sdesc">Software simulasi untuk berlatih rangkaian hidraulik & pneumatik secara virtual. Wajib dicoba sebelum praktikum nyata.</p>
+  <div class="sim-grid" id="simGrid"></div>
+</section>
+
+<hr class="sep">
+
+<!-- ═══════════════ GLOSARIUM ═══════════════ -->
+<div class="sec-full" id="glos">
+<div class="sec-inner">
+  <span class="slbl">MODUL 10 — KAMUS ISTILAH TEKNIS</span>
+  <h2 class="stitle">Glosarium <span>Teknis Maritim</span></h2>
+  <div class="divr"></div>
+  <p class="sdesc">Klik istilah untuk melihat definisi lengkap. Lebih dari 50 istilah teknis hidraulik, pneumatik, dan maritim dalam Bahasa Indonesia dan Inggris.</p>
+  <input type="text" class="gloss-search" id="glossSearch" placeholder="🔍 Cari istilah... (cth: pressure, aktuator, solenoid)" oninput="filterGloss(this.value)">
+  <div class="gloss-grid" id="glossGrid"></div>
+</div>
+</div>
+
+<!-- ═══════════════ CTA ═══════════════ -->
+<div style="background:linear-gradient(135deg,var(--navy2),var(--navy3));border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:80px 20px;text-align:center;">
+  <div style="max-width:700px;margin:0 auto;">
+    <span class="slbl" style="display:block;margin-bottom:12px;">MATERI LANJUTAN</span>
+    <h2 style="font-family:'Orbitron',sans-serif;font-size:1.8rem;color:var(--gold);margin-bottom:14px;">Siap Menguasai Lebih Dalam?</h2>
+    <p style="color:var(--gray);margin-bottom:30px;">Pelajari lebih mendalam dengan modul lengkap, video pembelajaran, soal latihan, dan panduan PRALA khusus taruna teknika maritim.</p>
+    <div class="cta-row" style="justify-content:center">
+      <a href="#roadmap" class="btn-cta">📘 Mulai Roadmap →</a>
+      <a href="#ts" class="btn-out">🛠️ Troubleshooting Guide</a>
+    </div>
+    <p style="margin-top:18px;font-family:'Share Tech Mono',monospace;font-size:.72rem;color:var(--gray2);">Maritime Learning Series — Rafael Sukirno, CE | Dikembangkan sejak 2026</p>
+  </div>
+</div>
+
+<!-- ═══════════════ FOOTER ═══════════════ -->
+<footer>
+  <div class="foot-brand">HYDRAULIC & PNEUMATIC SYSTEM DI KAPAL</div>
+  <div style="font-family:'Barlow Condensed',sans-serif;font-size:.85rem;color:var(--gray2);margin-bottom:4px;">Akar dan Cabang dari Mechanical – Electrical – Control System di Atas Kapal</div>
+  <div class="foot-name">Rafael Sukirno, CE</div>
+  <div class="foot-title">Praktisi dan Pelaku Industri Maritim Global</div>
+  <div class="foot-inst">Politeknik Pelayaran Surabaya &nbsp;|&nbsp; Universitas Hang Tuah Surabaya<br>Program D-III & D-IV Teknika &nbsp;|&nbsp; Semester III – VIII</div>
+  <div class="foot-quote">
+    "Disadur dan dikembangkan secara original oleh Rafael Sukirno, CE.<br>
+    Praktisi dan Pelaku Industri Maritim Global.<br>
+    Dikembangkan sejak tahun 2026.<br>
+    Semoga menjadi ilmu yang bermanfaat bagi taruna dan seluruh pelaku industri maritim."
+  </div>
+  <div class="foot-tags">
+    <span class="foot-tag">HYDRAULICS</span><span class="foot-tag">PNEUMATICS</span>
+    <span class="foot-tag">ISO 1219</span><span class="foot-tag">SOLAS</span>
+    <span class="foot-tag">STCW</span><span class="foot-tag">MARINE ENGINEERING</span>
+    <span class="foot-tag">FESTO</span><span class="foot-tag">ROWSE</span>
+    <span class="foot-tag">MAN B&W</span><span class="foot-tag">WÄRTSILÄ</span>
+  </div>
+  <div class="foot-copy">© 2026 Rafael Sukirno, CE — All Rights Reserved | Marine Hydraulic & Pneumatic Learning Platform</div>
+</footer>
+
+<!-- ═══════════════ MODAL ═══════════════ -->
+<div class="modal-bg" id="modalBg" onclick="closeModalClick(event)">
+  <div class="modal-box" id="modalBox">
+    <div class="modal-hdr">
+      <div class="modal-title" id="mTitle">Detail</div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="mBody"></div>
+  </div>
+</div>
+
+<!-- ═══════════════ JAVASCRIPT ═══════════════ -->
+<script>
+// ═══════════════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════════════
+
+const COMPS = [
+  {id:'pump',cat:'tenaga',name:'Pompa Hidraulik',en:'Hydraulic Pump',badge:'SUMBER TENAGA',badgeC:'rgba(0,229,255,.12)',badgeT:'var(--cyan)',
+   func:'Menghasilkan aliran fluida bertekanan tinggi dari energi mekanik motor listrik atau mesin diesel',
+   cara:'Rotor berputar menciptakan perbedaan tekanan — oli dari reservoir terhisap dan didorong ke sistem bertekanan tinggi',
+   flow:'RESERVOIR → [PUMP] → Tekanan 100–350 bar → VALVE → ACTUATOR',
+   app:'Steering gear, deck crane, mooring winch, hatch cover, anchor windlass',
+   spec:'Tekanan: 50–350 bar | Flow: 10–500 L/min | Tipe: Gear, Vane, Piston',
+   sym:`<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="40" cy="40" r="24" stroke="#00e5ff" stroke-width="2" fill="rgba(0,229,255,0.05)"/><line x1="16" y1="40" x2="64" y2="40" stroke="#00e5ff" stroke-width="1.5"/><polygon points="50,40 38,32 38,48" fill="#00e5ff"/><circle cx="40" cy="40" r="4" fill="#00e5ff"/></svg>`},
+
+  {id:'compressor',cat:'tenaga',name:'Kompresor Udara',en:'Air Compressor',badge:'SUMBER TENAGA',badgeC:'rgba(255,214,0,.1)',badgeT:'var(--gold)',
+   func:'Mengkompresikan udara atmosfer hingga tekanan kerja 7–30 bar untuk sistem pneumatik',
+   cara:'Piston/screw menekan udara, menaikkan tekanan dan suhu. Aftercooler mendinginkan sebelum masuk air receiver',
+   flow:'ATMOSFER → [COMPRESSOR] → 7–30 bar → AIR RECEIVER → FRL → VALVE',
+   app:'Air starter mesin induk (30 bar), instrument air (7 bar), klakson, control valve',
+   spec:'Tekanan: 7–30 bar | Kapasitas: 50–2000 m³/jam | Tipe: Piston, Screw, Rotary',
+   sym:`<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="40" cy="40" r="24" stroke="#ffd600" stroke-width="2" fill="rgba(255,214,0,0.05)"/><line x1="16" y1="40" x2="64" y2="40" stroke="#ffd600" stroke-width="1.5"/><polygon points="30,40 42,32 42,48" fill="#ffd600"/><line x1="58" y1="30" x2="58" y2="50" stroke="#ffd600" stroke-width="2"/></svg>`},
+
+  {id:'dcv',cat:'kontrol',name:'Katup Kontrol Arah',en:'Directional Control Valve (DCV)',badge:'CONTROL VALVE',badgeC:'rgba(0,229,255,.12)',badgeT:'var(--cyan)',
+   func:'Mengarahkan aliran fluida ke port yang diinginkan untuk mengontrol arah gerakan actuator',
+   cara:'Spool bergerak (solenoid/manual/pilot) membuka/menutup jalur antara port P, A, B, T. Notasi: Jumlah Port/Jumlah Posisi',
+   flow:'P→A: Cylinder MAJU | B→T: Return | P→B: Cylinder MUNDUR | A→T: Return',
+   app:'Semua sistem dengan cylinder atau motor — steering, crane, winch, hatch',
+   spec:'Notasi: 4/3, 5/2, 4/2, 3/2 | Port: P,A,B,T | Actuasi: solenoid/manual/pilot',
+   sym:`<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="8" y="28" width="22" height="22" rx="1" stroke="#00e5ff" stroke-width="2" fill="rgba(0,229,255,0.05)"/><rect x="30" y="28" width="22" height="22" rx="1" stroke="#00e5ff" stroke-width="2" fill="none"/><rect x="52" y="28" width="14" height="22" rx="1" stroke="#00e5ff" stroke-width="1" fill="none"/><line x1="12" y1="39" x2="28" y2="39" stroke="#00e5ff" stroke-width="1.5"/><polygon points="22,39 18,35 18,43" fill="#00e5ff"/><line x1="34" y1="34" x2="48" y2="44" stroke="#00e5ff" stroke-width="1.5"/><line x1="34" y1="44" x2="48" y2="34" stroke="#00e5ff" stroke-width="1.5"/><rect x="54" y="30" width="10" height="8" rx="1" stroke="#ffd600" stroke-width="1.5" fill="rgba(255,214,0,0.08)"/></svg>`},
+
+  {id:'solenoid',cat:'kontrol',name:'Katup Solenoid',en:'Solenoid Valve',badge:'CONTROL VALVE',badgeC:'rgba(0,229,255,.12)',badgeT:'var(--cyan)',
+   func:'Katup yang dioperasikan secara elektromagnetik — mengontrol aliran secara otomatis dari jarak jauh',
+   cara:'Arus listrik ke coil → medan magnet → plunger tertarik → spool bergerak → port terbuka. Spring return saat listrik mati (fail-safe)',
+   flow:'Sinyal 24VDC → Coil Aktif → Plunger Tertarik → Spool Geser → Port Terbuka → Fluida Mengalir',
+   app:'Otomasi sistem PLC, remote control steering, cargo valve, fuel control, deck machinery',
+   spec:'Tegangan: 24VDC / 110-220VAC | IP65/IP67 | Response <50ms | Fail-safe spring return',
+   sym:`<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="20" y="30" width="30" height="20" rx="1" stroke="#00e5ff" stroke-width="2" fill="rgba(0,229,255,0.05)"/><rect x="50" y="33" width="14" height="14" rx="1" stroke="#ffd600" stroke-width="2" fill="rgba(255,214,0,0.06)"/><line x1="8" y1="40" x2="20" y2="40" stroke="#00e5ff" stroke-width="2"/><line x1="20" y1="50" x2="20" y2="60" stroke="#00e5ff" stroke-width="2"/><line x1="50" y1="50" x2="50" y2="60" stroke="#00e5ff" stroke-width="2"/><text x="53" y="43" font-size="7" fill="#ffd600" font-family="monospace">E</text></svg>`},
+
+  {id:'manual_v',cat:'kontrol',name:'Katup Manual',en:'Manual / Hand Operated Valve',badge:'CONTROL VALVE',badgeC:'rgba(0,229,255,.12)',badgeT:'var(--cyan)',
+   func:'Katup yang dioperasikan secara manual oleh operator — tanpa listrik atau sinyal pilot. Backup dan isolasi sistem',
+   cara:'Operator gerakkan tuas/handle → spool bergerak → jalur aliran terbuka/tertutup. Tidak butuh energi eksternal',
+   flow:'Operator → Handle Mekanik → Spool Bergerak → Jalur Aliran Terbuka/Tertutup',
+   app:'Valve isolasi emergency, pengujian lokal, bypass circuit, kontrol darurat saat otomatis mati',
+   spec:'Actuasi: mekanik murni | Tidak perlu listrik | Selalu ada sebagai backup',
+   sym:`<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="18" y="30" width="44" height="20" rx="1" stroke="#00e5ff" stroke-width="2" fill="rgba(0,229,255,0.05)"/><line x1="8" y1="40" x2="18" y2="40" stroke="#00e5ff" stroke-width="2"/><line x1="62" y1="40" x2="72" y2="40" stroke="#00e5ff" stroke-width="2"/><line x1="40" y1="30" x2="40" y2="18" stroke="#00e5ff" stroke-width="2"/><line x1="30" y1="18" x2="50" y2="18" stroke="#00e5ff" stroke-width="3"/></svg>`},
+
+  {id:'pilot_v',cat:'kontrol',name:'Katup Pilot',en:'Pilot Operated Valve',badge:'CONTROL VALVE',badgeC:'rgba(0,229,255,.12)',badgeT:'var(--cyan)',
+   func:'Katup yang dikontrol tekanan pilot kecil untuk menggerakkan main valve besar. "Sinyal kecil kontrol beban besar"',
+   cara:'Tekanan pilot (3–10 bar) → piston kecil bergerak → membuka/menutup spool main valve yang menangani aliran utama',
+   flow:'Tekanan Pilot → Pilot Port → Internal Piston → Spool Utama Bergerak → Main Flow Terkontrol',
+   app:'Hydraulic steering gear, counterbalance valve, sequence valve, remote control sistem kapal',
+   spec:'Pilot pressure: min 3–10 bar | Kontrol main valve hingga 350 bar | Ratio 1:10 s/d 1:50',
+   sym:`<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="16" y="30" width="32" height="20" rx="1" stroke="#00e5ff" stroke-width="2" fill="rgba(0,229,255,0.05)"/><line x1="6" y1="40" x2="16" y2="40" stroke="#00e5ff" stroke-width="2"/><line x1="48" y1="40" x2="58" y2="40" stroke="#00e5ff" stroke-width="2"/><line x1="24" y1="36" x2="32" y2="44" stroke="#00e5ff" stroke-width="1.5"/><line x1="24" y1="44" x2="32" y2="36" stroke="#00e5ff" stroke-width="1.5"/><line x1="32" y1="40" x2="32" y2="22" stroke="#ffd600" stroke-width="1.5" stroke-dasharray="3,2"/><circle cx="32" cy="18" r="5" stroke="#ffd600" stroke-width="1.5" fill="rgba(255,214,0,.1)"/></svg>`},
+
+  {id:'check',cat:'kontrol',name:'Katup Searah',en:'Check Valve (Non-Return Valve)',badge:'NON-RETURN',badgeC:'rgba(0,230,118,.1)',badgeT:'var(--green)',
+   func:'Memungkinkan aliran HANYA satu arah dan secara otomatis mencegah aliran balik (backflow)',
+   cara:'Ball/poppet ditahan spring. Tekanan alir → ball terangkat → aliran bebas. Tekanan balik → ball ke seat → tertutup rapat',
+   flow:'→ [✓ ALIRAN BEBAS] → | ← [✗ TERTUTUP OTOMATIS] ←',
+   app:'Outlet pompa (cegah backflow), safety circuit, pilot operated check valve di crane',
+   spec:'Cracking pressure: 0.3–3 bar | Aliran satu arah mutlak | Wajib dekat outlet pompa',
+   sym:`<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><line x1="10" y1="40" x2="70" y2="40" stroke="#00e676" stroke-width="2"/><polygon points="38,26 56,40 38,54" fill="none" stroke="#00e676" stroke-width="2"/><line x1="38" y1="26" x2="38" y2="54" stroke="#00e676" stroke-width="2.5"/></svg>`},
+
+  {id:'relief',cat:'tekanan',name:'Katup Pengaman Tekanan',en:'Pressure Relief Valve',badge:'PRESSURE CONTROL',badgeC:'rgba(255,68,68,.1)',badgeT:'var(--red)',
+   func:'Melindungi sistem dari overpressure — membuang kelebihan fluida ke tangki saat tekanan melebihi setting',
+   cara:'Spring menahan poppet tertutup. Tekanan > setting → poppet terangkat → fluida ke tank → tekanan turun → tertutup lagi',
+   flow:'Tekanan Normal: TERTUTUP → Tekanan > Setting: BUKA → Fluida ke TANK → Tekanan Turun → TERTUTUP',
+   app:'WAJIB di outlet semua pompa hidraulik — proteksi crane, winch, steering gear, seluruh sistem',
+   spec:'Setting: 10–350 bar | Direct acting / Pilot operated | Selalu dekat outlet pompa',
+   sym:`<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><line x1="10" y1="40" x2="70" y2="40" stroke="#ff4444" stroke-width="2"/><circle cx="40" cy="40" r="10" stroke="#ff4444" stroke-width="2" fill="rgba(255,68,68,0.06)"/><line x1="40" y1="26" x2="40" y2="30" stroke="#ff4444" stroke-width="2"/><line x1="35" y1="20" x2="45" y2="26" stroke="#ff4444" stroke-width="1.5"/><line x1="40" y1="14" x2="40" y2="20" stroke="#ff4444" stroke-width="1.5"/></svg>`},
+
+  {id:'regulator',cat:'tekanan',name:'Regulator Tekanan',en:'Pressure Regulator',badge:'PRESSURE CONTROL',badgeC:'rgba(255,214,0,.08)',badgeT:'var(--gold)',
+   func:'Menurunkan dan menstabilkan tekanan dari sumber ke nilai yang diinginkan — tekanan konstan meski beban berubah',
+   cara:'Diaphragm merasakan tekanan output. Tekanan naik > setting → valve tertutup. Turun → buka. Self-regulating kontinyu',
+   flow:'Input Tekanan Tinggi → [REGULATOR] → Output Tekanan Stabil & Teratur ke Sistem',
+   app:'FRL unit pneumatik, instrument air, pressure reducing circuit hidraulik, control system',
+   spec:'Input: hingga 16 bar | Output adjustable: 0.5–12 bar | Accuracy: ±0.1 bar',
+   sym:`<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><line x1="10" y1="40" x2="70" y2="40" stroke="#ffd600" stroke-width="2"/><rect x="28" y="28" width="24" height="24" rx="2" stroke="#ffd600" stroke-width="2" fill="rgba(255,214,0,0.05)"/><line x1="40" y1="16" x2="40" y2="28" stroke="#ffd600" stroke-width="2"/><line x1="34" y1="16" x2="46" y2="16" stroke="#ffd600" stroke-width="2"/></svg>`},
+
+  {id:'fcv',cat:'aliran',name:'Katup Kontrol Aliran',en:'Flow Control Valve',badge:'FLOW CONTROL',badgeC:'rgba(0,229,255,.12)',badgeT:'var(--cyan)',
+   func:'Mengatur laju aliran (flow rate) untuk mengontrol kecepatan gerakan actuator — kecil orifice = lebih lambat',
+   cara:'Orifice adjustable membatasi flow. Pressure compensated type menjaga flow konstan meski tekanan berfluktuasi',
+   flow:'Aliran Masuk → [THROTTLE ORIFICE] → Aliran Keluar Terbatas → Cylinder Bergerak Lambat/Cepat',
+   app:'Speed control cylinder crane, deceleration circuit, metering in/out circuit hidraulik',
+   spec:'Flow: 0.05–500 L/min | Adjustable/fixed | Pressure compensated option tersedia',
+   sym:`<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><line x1="10" y1="40" x2="70" y2="40" stroke="#00e5ff" stroke-width="2"/><line x1="28" y1="28" x2="52" y2="52" stroke="#00e5ff" stroke-width="2"/><line x1="32" y1="24" x2="48" y2="24" stroke="#ffd600" stroke-width="2"/><line x1="40" y1="16" x2="40" y2="24" stroke="#ffd600" stroke-width="2"/></svg>`},
+
+  {id:'cyl_sa',cat:'aktuator',name:'Cylinder Single Acting',en:'Single Acting Cylinder',badge:'AKTUATOR',badgeC:'rgba(0,230,118,.1)',badgeT:'var(--green)',
+   func:'Menghasilkan gerakan linear SATU arah aktif (didorong fluida), arah balik oleh spring. Satu port fluida saja',
+   cara:'Fluida masuk → piston maju (extend). Tekanan dilepas → spring return → piston mundur (retract). Spring menentukan gaya balik',
+   flow:'P → Port Masuk → Piston MAJU | Spring → Piston MUNDUR (saat P dilepas)',
+   app:'Clamping, pressing, locking, simple actuation, door mechanism',
+   spec:'Satu port fluida | Spring return | Stroke: 10–500mm | Gaya balik terbatas oleh spring',
+   sym:`<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="10" y="28" width="46" height="24" rx="2" stroke="#00e676" stroke-width="2" fill="rgba(0,230,118,0.04)"/><rect x="30" y="30" width="4" height="20" fill="#00e676"/><line x1="56" y1="40" x2="70" y2="40" stroke="#00e676" stroke-width="3"/><line x1="14" y1="32" x2="14" y2="48" stroke="#00e676" stroke-width="1"/></svg>`},
+
+  {id:'cyl_da',cat:'aktuator',name:'Cylinder Double Acting',en:'Double Acting Cylinder',badge:'AKTUATOR',badgeC:'rgba(0,230,118,.1)',badgeT:'var(--green)',
+   func:'Menghasilkan gerakan linear DUA arah aktif — maju DAN mundur sama-sama digerakkan fluida. Dua port fluida',
+   cara:'Fluida ke Port A → MAJU. Fluida ke Port B → MUNDUR. Dikontrol penuh oleh DCV. Gaya aktif dua arah',
+   flow:'P→A: MAJU (B→T) | P→B: MUNDUR (A→T) | Dikontrol sepenuhnya oleh DCV 4/3 atau 5/2',
+   app:'Steering gear rudder, crane boom, hatch cover, hatch crane, press machine — aplikasi utama kapal',
+   spec:'Dua port fluida | Aktif dua arah | Bore: Ø25–500mm | Stroke: hingga 6000mm',
+   sym:`<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="8" y="28" width="52" height="24" rx="2" stroke="#00e676" stroke-width="2" fill="rgba(0,230,118,0.04)"/><rect x="30" y="30" width="4" height="20" fill="#00e676"/><line x1="60" y1="40" x2="72" y2="40" stroke="#00e676" stroke-width="3"/><line x1="12" y1="32" x2="12" y2="48" stroke="#00e676" stroke-width="1.5"/><line x1="56" y1="32" x2="56" y2="48" stroke="#00e676" stroke-width="1.5"/></svg>`},
+
+  {id:'motor_h',cat:'aktuator',name:'Motor Hidraulik',en:'Hydraulic Motor',badge:'AKTUATOR',badgeC:'rgba(0,230,118,.1)',badgeT:'var(--green)',
+   func:'Mengubah energi hidraulik menjadi rotasi mekanik — kebalikan fungsi pompa. Torsi sangat besar pada kecepatan rendah',
+   cara:'Fluida bertekanan mendorong piston/vane/gear rotor → menghasilkan torsi dan putaran output shaft',
+   flow:'P → [MOTOR] → ROTASI OUTPUT SHAFT | Fluida keluar → T (Return ke Reservoir)',
+   app:'Mooring winch drum, deck crane slewing, capstan, bow thruster, conveyor drive kapal',
+   spec:'Torsi: hingga 100,000 Nm (orbital) | Speed: 1–3000 RPM | Tipe: Gear/Vane/Piston/Orbital',
+   sym:`<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="40" cy="40" r="22" stroke="#00e676" stroke-width="2" fill="rgba(0,230,118,0.04)"/><line x1="18" y1="40" x2="62" y2="40" stroke="#00e676" stroke-width="1.5"/><polygon points="26,40 38,32 38,48" fill="#00e676"/><line x1="62" y1="34" x2="70" y2="34" stroke="#00e676" stroke-width="2"/><line x1="62" y1="46" x2="70" y2="46" stroke="#00e676" stroke-width="2"/></svg>`},
+
+  {id:'frl',cat:'khusus',name:'Unit FRL (Filter-Regulator-Lubricator)',en:'FRL Unit',badge:'PNEUMATIK KHUSUS',badgeC:'rgba(255,214,0,.08)',badgeT:'var(--gold)',
+   func:'Unit tiga-fungsi WAJIB dalam sistem pneumatik: F=Filter, R=Regulator, L=Lubricator. Menjamin kualitas udara kerja',
+   cara:'F: Saring partikel, air, debu. R: Turunkan & stabilkan tekanan. L: Tambahkan kabut oli pelumas untuk komponen downstream',
+   flow:'Udara Kotor Basah → [F] Tersaring → [R] Tekanan Stabil → [L] Terlumasi → Udara Siap → VALVE',
+   app:'WAJIB di inlet semua sistem pneumatik — setelah air receiver, sebelum control valve pertama',
+   spec:'Filter: 5–40 µm | Regulator: 0.5–10 bar | Bowl lubricator: 20–100 mL',
+   sym:`<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="28" width="16" height="20" rx="1" stroke="#ffd600" stroke-width="1.5" fill="rgba(255,214,0,.04)"/><line x1="8" y1="32" x2="16" y2="46" stroke="#ffd600" stroke-width="1"/><line x1="16" y1="32" x2="8" y2="46" stroke="#ffd600" stroke-width="1"/><rect x="26" y="28" width="16" height="20" rx="1" stroke="#ffd600" stroke-width="1.5" fill="rgba(255,214,0,.04)"/><line x1="34" y1="18" x2="34" y2="28" stroke="#ffd600" stroke-width="1.5"/><line x1="29" y1="18" x2="39" y2="18" stroke="#ffd600" stroke-width="1.5"/><rect x="48" y="28" width="16" height="20" rx="1" stroke="#ffd600" stroke-width="1.5" fill="rgba(255,214,0,.04)"/><circle cx="56" cy="42" r="4" stroke="#ffd600" stroke-width="1" fill="none"/><line x1="20" y1="38" x2="26" y2="38" stroke="#ffd600" stroke-width="1.5"/><line x1="42" y1="38" x2="48" y2="38" stroke="#ffd600" stroke-width="1.5"/></svg>`},
+
+  {id:'accum',cat:'khusus',name:'Accumulator Hidraulik',en:'Hydraulic Accumulator',badge:'STORAGE',badgeC:'rgba(255,109,0,.1)',badgeT:'var(--orange)',
+   func:'Menyimpan energi hidraulik (tekanan tinggi) dan melepaskannya saat dibutuhkan — mirip baterai untuk sistem hidraulik',
+   cara:'Gas nitrogen (N₂) dikompresikan saat fluida masuk. Saat pompa mati, nitrogen mendorong fluida keluar ke sistem',
+   flow:'Pompa ON → Fluida Masuk → N₂ Terkompresi → Pompa OFF → N₂ Dorong Fluida → Sistem Tetap Bertekanan',
+   app:'Emergency steering power, peak demand damping, pressure compensation, energy recovery',
+   spec:'Kapasitas: 0.5–50 liter | Pre-charge N₂: biasanya 60% tekanan kerja | Bladder/Piston/Diaphragm type',
+   sym:`<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><ellipse cx="40" cy="40" rx="18" ry="24" stroke="#ff6d00" stroke-width="2" fill="rgba(255,109,0,0.05)"/><line x1="40" y1="52" x2="40" y2="65" stroke="#ff6d00" stroke-width="2"/><text x="34" y="44" font-size="10" fill="#ff6d00" font-family="monospace">N₂</text></svg>`},
+];
+
+const CASES = {
+  c1:{
+    title:'HYDRAULIC MOORING WINCH',emoji:'⚓',
+    desc:'Winch hidraulik menarik/mengulur tali tambat kapal. Motor hidraulik orbital memberikan torsi besar pada kecepatan rendah.',
+    steps:[
+      {n:'01',h:'Hydraulic Power Unit (HPU)',p:'Pompa piston Wärtsilä 250 bar digerakkan motor listrik 37kW. Reservoir 400L oli VG46. Oil cooler sea water type.'},
+      {n:'02',h:'Proportional DCV',p:'Operator gerak joystick → sinyal 4–20mA → proportional DCV mengatur arah & kecepatan motor hidraulik secara halus.'},
+      {n:'03',h:'Orbital Hydraulic Motor',p:'Motor radial piston orbital 15,000 Nm pada 50 RPM. Mampu menarik tali tambat beban 20 ton dengan presisi.'},
+      {n:'04',h:'Fail-Safe Brake',p:'Hydraulic brake otomatis mengunci drum saat pressure drop. Counterbalance valve cegah tali terlepas bebas.'},
+    ],
+    specs:[
+      {k:'Max Tekanan',v:'250 bar'},
+      {k:'Pull Capacity',v:'20 ton'},
+      {k:'Drum Speed',v:'0–30 m/min'},
+      {k:'Motor Type',v:'Orbital Radial Piston'},
+      {k:'HPU Brand',v:'Wärtsilä'},
+      {k:'Safety',v:'SOLAS Compliant'},
+    ]
+  },
+  c2:{
+    title:'HYDRAULIC DECK CRANE',emoji:'🏗️',
+    desc:'Crane bongkar muat hidraulik di kapal tanpa fasilitas crane pelabuhan. Kontrol presisi dengan proportional valve.',
+    steps:[
+      {n:'01',h:'HPU — Hydraulic Power Unit',p:'Pompa piston variabel 200 bar, reservoir 500L. Pressure kompensator otomatis menyesuaikan flow sesuai demand.'},
+      {n:'02',h:'Slewing System (Putar 360°)',p:'Motor hidraulik radial piston menggerakkan ring gear. Proportional valve untuk putaran halus dan presisi.'},
+      {n:'03',h:'Luffing (Naik-Turun Boom)',p:'Cylinder Ø200mm double acting. Counterbalance valve mencegah boom jatuh bebas saat power failure.'},
+      {n:'04',h:'Hoisting (Angkat Beban)',p:'Motor hidraulik + brake spring. Load Limiting Device memutus operasi jika beban melebihi SWL.'},
+    ],
+    specs:[
+      {k:'SWL (Safe Working Load)',v:'25 ton'},
+      {k:'Max Tekanan',v:'200 bar'},
+      {k:'Radius Kerja',v:'hingga 16 meter'},
+      {k:'Slewing',v:'360° kontinu'},
+      {k:'Safety Device',v:'Load Limiter'},
+      {k:'Standard',v:'Class NK/BV'},
+    ]
+  },
+  c3:{
+    title:'HYDRAULIC STEERING GEAR',emoji:'🚢',
+    desc:'Sistem kemudi kapal RAM type. Dua pompa independen WAJIB SOLAS. Electro-hydraulic dengan follow-up control.',
+    steps:[
+      {n:'01',h:'SOLAS Requirement',p:'Dua unit pompa hidraulik independen wajib ada. Masing-masing mampu memutar rudder 35°→35° dalam 28 detik.'},
+      {n:'02',h:'RAM Cylinder (4× Double Acting)',p:'Empat cylinder RAM double acting menggerakkan tiller/quadrant ke rudder stock. Tekanan kerja 175–250 bar.'},
+      {n:'03',h:'Follow-Up System',p:'Rudder Angle Indicator kirim feedback ke PLC. PLC adjust proportional valve untuk koreksi posisi secara otomatis.'},
+      {n:'04',h:'Emergency Steering',p:'NFU mode dan manual dari steering gear room. Wajib dilatih setiap STCW emergency drill.'},
+    ],
+    specs:[
+      {k:'Tekanan Kerja',v:'175–250 bar'},
+      {k:'Waktu Putar',v:'35°→35° / 28 detik'},
+      {k:'Jumlah Pompa',v:'2 unit independen'},
+      {k:'Cylinder Type',v:'RAM Double Acting'},
+      {k:'Control',v:'Electro-hydraulic PLC'},
+      {k:'SOLAS',v:'Chapter II-1'},
+    ]
+  },
+  c4:{
+    title:'AIR STARTER SYSTEM',emoji:'💨',
+    desc:'Sistem pneumatik untuk starting mesin induk 2-tak menggunakan udara 25–30 bar. Sistem paling kritis di kapal.',
+    steps:[
+      {n:'01',h:'Air Compressor (2 unit)',p:'SOLAS wajib minimal 2 kompressor independen. Tekanan kerja hingga 30 bar. Kapasitas memenuhi kebutuhan starting.'},
+      {n:'02',h:'Air Receiver (Botol Angin)',p:'Volume 500–2000L per receiver. SOLAS: harus mampu 12× starting mesin tanpa pengisian ulang.'},
+      {n:'03',h:'Starting Distributor',p:'Distributor pneumatik membuka starting valve pada setiap silinder mesin sesuai firing order secara berurutan.'},
+      {n:'04',h:'Interlock Safety System',p:'Turning gear interlock mencegah starting saat gear terpasang. Slow turning valve untuk pre-start check mesin.'},
+    ],
+    specs:[
+      {k:'Tekanan Udara',v:'25–30 bar'},
+      {k:'Volume Receiver',v:'500–2000 L'},
+      {k:'Kapasitas Starting',v:'Min 12× (SOLAS)'},
+      {k:'Jumlah Kompressor',v:'Min 2 unit (SOLAS)'},
+      {k:'Safety',v:'Turning gear interlock'},
+      {k:'Standard',v:'SOLAS Ch.II-1'},
+    ]
+  },
+  c5:{
+    title:'HYDRAULIC HATCH COVER',emoji:'🚪',
+    desc:'Penutup palka (hatch cover) dioperasikan sistem hidraulik. MacGregor type paling umum di bulk carrier.',
+    steps:[
+      {n:'01',h:'HPU Hatch Cover',p:'HPU dedicated 150–200 bar untuk hatch system. Reservoir 200L, pompa gear atau vane pump.'},
+      {n:'02',h:'Cylinder Hydraulic',p:'Multiple cylinder double acting membuka dan menutup panel hatch. Seal khusus untuk environment deck.'},
+      {n:'03',h:'Control System',p:'Control panel di deck dengan solenoid valve. Limit switch memastikan hatch fully open/closed sebelum cargo ops.'},
+      {n:'04',h:'Safety Interlock',p:'Pressure holding valve mencegah hatch jatuh bebas. Weather tight seal verification setelah closing.'},
+    ],
+    specs:[
+      {k:'Tekanan Kerja',v:'150–200 bar'},
+      {k:'Tipe',v:'MacGregor Folding'},
+      {k:'Seal Type',v:'Rubber weather tight'},
+      {k:'Control',v:'Deck control panel'},
+      {k:'Safety',v:'Pressure holding valve'},
+      {k:'Application',v:'Bulk carrier, tanker'},
+    ]
+  },
+  c6:{
+    title:'FUEL OIL SYSTEM — Pneumatic Control',emoji:'⛽',
+    desc:'Sistem bahan bakar mesin menggunakan pneumatik untuk mengontrol valve jarak jauh. Safety system kritis.',
+    steps:[
+      {n:'01',h:'Quick Closing Valve (QCV)',p:'Solenoid pneumatik menutup valve bahan bakar secara darurat. Spring-to-close untuk fail-safe saat listrik mati.'},
+      {n:'02',h:'Remote Control Valve',p:'Pneumatic actuated valve dikontrol dari engine control room dan bridge secara remote.'},
+      {n:'03',h:'Fusible Link System',p:'Jika suhu tinggi (fire), fusible link meleleh → udara pilot terputus → QCV menutup otomatis tanpa listrik.'},
+      {n:'04',h:'Position Feedback',p:'Limit switch pada setiap valve mengirimkan sinyal open/closed ke alarm system dan bridge indication panel.'},
+    ],
+    specs:[
+      {k:'Actuator Type',v:'Pneumatic spring-close'},
+      {k:'Pilot Pressure',v:'4–7 bar'},
+      {k:'Fail-safe',v:'Normally Closed (spring)'},
+      {k:'Fire Safety',v:'Fusible link integration'},
+      {k:'Control',v:'ECR + Bridge Remote'},
+      {k:'Standard',v:'SOLAS Fire Safety'},
+    ]
+  }
+};
+
+const TS_DATA = [
+  {icon:'⚙️',prob:'Cylinder Tidak Bergerak',
+   causes:['DCV solenoid coil putus / tidak ada tegangan 24VDC','Tekanan sistem terlalu rendah (pompa bermasalah)','Piston seal bocor internal (internal leakage)','Jalur pipa/hose tersumbat atau gepeng'],
+   sols:['Ukur tegangan di terminal solenoid — harus 24VDC','Cek pressure gauge di outlet pompa vs setpoint relief valve','Pressure test: tekanan tidak naik = seal bocor','Visual check seluruh jalur, luruskan hose yang gepeng']},
+
+  {icon:'📉',prob:'Tekanan Sistem Drop',
+   causes:['Relief valve setting terlalu rendah / rusak','Pompa aus — volume efficiency menurun signifikan','Kebocoran internal besar di dalam valve atau cylinder','Oli overheat — viscosity turun, leakage naik'],
+   sols:['Ukur tekanan relief valve, sesuaikan ke spec manufaktur','Test volumetric efficiency pompa dengan flow meter','Ganti seal valve, lakukan leak-down test per komponen','Periksa oil cooler, pastikan suhu oli < 60°C kapal tropis']},
+
+  {icon:'🔒',prob:'Valve Macet / Tidak Beroperasi',
+   causes:['Kontaminasi partikel keras pada spool valve','Korosi atau scale build-up dalam valve body','Solenoid coil overheated / short circuit','Tekanan pilot tidak cukup (min 3 bar untuk pilot valve)'],
+   sols:['Flush sistem hidraulik, ganti filter, bersihkan spool','Bongkar valve, bersihkan atau ganti komponen korosi','Ukur resistance coil (harus sesuai spec), ganti jika perlu','Cek dan adjust tekanan pilot supply ke minimum spec']},
+
+  {icon:'🔴',prob:'Kebocoran Oli Eksternal',
+   causes:['O-ring atau seal rusak/mengeras akibat umur/panas','Fitting longgar atau thread rusak/stripped','Hose/pipa retak akibat abrasi atau tekanan berlebih','Cylinder rod seal aus — oli keluar sepanjang rod'],
+   sols:['Ganti O-ring sesuai material dan part number','Kencangkan fitting dengan torque wrench sesuai spec','Ganti hose, pasang pelindung di area kontak gesekan','Ganti rod seal, periksa kondisi permukaan rod (harus halus)']},
+
+  {icon:'🐢',prob:'Sistem Hidraulik Lambat',
+   causes:['Flow control valve tersetting terlalu kecil','Filter hidraulik sangat kotor (ΔP tinggi)','Viskositas oli terlalu tinggi (suhu terlalu rendah)','Pompa aus — efisiensi volumetrik turun signifikan'],
+   sols:['Re-adjust flow control valve sesuai kebutuhan operasi','Ganti filter element sesuai jadwal PMS','Panaskan sistem sebelum operasi, periksa pemilihan grade oli','Test flow output pompa, overhaul jika efisiensi < 85%']},
+
+  {icon:'💨',prob:'Pneumatik Tidak Respon',
+   causes:['Kompressor tidak jalan atau kapasitas turun','Tekanan udara di receiver terlalu rendah','Filter FRL tersumbat — pressure drop besar','Kebocoran besar pada sambungan pipa/fitting'],
+   sols:['Periksa kompressor: starting, unloading valve, kapasitas','Tunggu tekanan receiver mencapai working pressure','Ganti filter element FRL, bersihkan bowl dari kondensat','Soap test semua sambungan — cari gelembung sabun']},
+
+  {icon:'🌡️',prob:'Sistem Overheating',
+   causes:['Oil cooler kotor/tersumbat (fouling)','Level oli reservoir terlalu rendah','Relief valve terbuka terus-menerus (sistem overpressure)','Pompa bekerja terus tanpa unloading (pressure switch rusak)'],
+   sols:['Bersihkan oil cooler dengan sikat dan flush air laut','Isi oli hingga level normal di sight glass','Cek setting relief valve — jangan di bawah tekanan kerja','Periksa pressure switch dan unloading valve — ganti jika rusak']},
+
+  {icon:'🌊',prob:'Gerakan Cylinder Tersendat',
+   causes:['Udara terjebak dalam sistem hidraulik (air pocket)','Counterbalance valve tersetting terlalu ketat','Beban tidak seimbang atau side load berlebih','Flow control valve tidak stabil (hunting)'],
+   sols:['Bleeding sistem: buka bleeder di titik tertinggi sistem','Turunkan setting counterbalance valve bertahap','Pasang guide/pillow block, periksa alignment mounting','Ganti atau service flow control valve yang hunting']},
+];
+
+const FAQ_DATA = [
+  {q:'Apakah sistem hydraulic dan pneumatic pada dasarnya sama?',
+   a:'<span class="faq-highlight">Prinsip dasarnya sama</span> — keduanya menggunakan fluida untuk mentransmisikan daya (sesuai Hukum Pascal). Namun medianya <span class="faq-highlight">sangat berbeda</span>: hidraulik menggunakan oli cair (incompressible, 100–350 bar) sedangkan pneumatik menggunakan udara (compressible, 4–8 bar). Di kapal, keduanya digunakan bersamaan dalam sistem yang berbeda namun terintegrasi.'},
+
+  {q:'Mana yang lebih kuat — hydraulic atau pneumatic?',
+   a:'<span class="faq-highlight">Hydraulic jauh lebih kuat</span>. Tekanan kerja hidraulik bisa mencapai 350 bar, menghasilkan gaya ribuan kilonewton dari cylinder yang relatif kecil. Contoh: steering gear kapal menggunakan hidraulik 250 bar untuk menggerakkan rudder seberat puluhan ton. Pneumatik (4–8 bar) lebih cocok untuk gaya sedang dan gerakan cepat.'},
+
+  {q:'Mana yang lebih cepat responnya?',
+   a:'<span class="faq-highlight">Pneumatik jauh lebih cepat</span>. Udara dapat mengalir dengan kecepatan sangat tinggi dan solenoid pneumatik bisa merespons dalam milidetik. Itulah mengapa sistem kontrol safety kritis (seperti quick closing valve bahan bakar) menggunakan pneumatik — respons cepat sangat penting untuk keselamatan.'},
+
+  {q:'Kenapa taruna harus mempelajari kedua sistem ini sekaligus?',
+   a:'Di kapal modern, <span class="faq-highlight">kedua sistem ini selalu berjalan berdampingan</span>. Mesin induk dihidupkan dengan udara pneumatik 30 bar, kemudian steering gear menggunakan hidraulik 250 bar, deck crane menggunakan hidraulik, control valve bahan bakar menggunakan pneumatik. Seorang engineer kapal WAJIB memahami keduanya untuk bisa bekerja secara profesional.'},
+
+  {q:'Apakah harus bisa ilmu listrik juga untuk memahami sistem ini?',
+   a:'<span class="faq-highlight">Ya, wajib!</span> Sistem hidraulik dan pneumatik modern tidak bisa dipisahkan dari listrik. Solenoid valve dioperasikan dengan 24VDC, PLC mengontrol semua valve secara otomatis, sensor tekanan dan flow mengirim sinyal listrik ke kontroler. Sistem kontrol di kapal modern adalah <span class="faq-highlight">elektro-hidraulik dan elektro-pneumatik</span> — integrasi sempurna antara ketiga disiplin.'},
+
+  {q:'Apa saja komponen yang paling penting untuk dipahami lebih dulu?',
+   a:'Urutan prioritas belajar: <span class="faq-highlight">(1) Hukum Pascal & konsep dasar</span> → (2) DCV (Directional Control Valve) — komponen paling kritis → (3) Pump & Compressor sebagai sumber tenaga → (4) Relief Valve sebagai pengaman wajib → (5) Actuator (cylinder & motor) → (6) FRL Unit untuk pneumatik. Kuasai DCV terlebih dahulu karena ia "jantung" dari sistem kontrol.'},
+
+  {q:'Bagaimana cara membaca diagram hidraulik/pneumatik?',
+   a:'Gunakan metode <span class="faq-highlight">Flow Tracing</span>: (1) Identifikasi sumber tenaga (pompa/kompressor), (2) Ikuti pressure line dari pompa ke valve, (3) Baca posisi spool DCV — port mana yang terbuka, (4) Ikuti aliran ke actuator untuk tentukan arah gerak, (5) Identifikasi return line kembali ke reservoir. Dengan flow tracing, diagram sepanjang apapun bisa dibaca secara sistematis.'},
+
+  {q:'Apa yang dimaksud dengan fail-safe dalam sistem ini?',
+   a:'<span class="faq-highlight">Fail-safe</span> artinya sistem secara otomatis masuk ke kondisi AMAN saat terjadi kegagalan. Contoh: solenoid valve spring-to-close — saat listrik mati, spring secara otomatis menutup valve (aman). Hydraulic brake pada winch — saat pressure drop, spring mengunci drum (mencegah muatan jatuh). Di kapal, prinsip fail-safe adalah desain wajib untuk semua sistem kritis keselamatan.'},
+
+  {q:'Apa itu PRALA dan mengapa perlu memahami sistem ini?',
+   a:'<span class="faq-highlight">PRALA (Praktek Laut)</span> adalah tahap dimana taruna bekerja di kapal nyata sebagai bagian dari pendidikan. Di kapal, taruna akan bertanggung jawab langsung terhadap operasi dan pemeliharaan sistem hidraulik dan pneumatik. Pemahaman yang kuat sebelum PRALA berarti <span class="faq-highlight">keselamatan lebih terjamin, kepercayaan diri lebih tinggi</span>, dan kontribusi kepada kapal lebih nyata sejak hari pertama.'},
+
+  {q:'Berapa tekanan yang dianggap berbahaya?',
+   a:'<span class="faq-highlight">Semua tekanan di atas 0 bar berpotensi berbahaya!</span> Tekanan hidraulik 100–350 bar sangat mematikan — oli bertekanan tinggi bisa menembus kulit dan menyebabkan injeksi oli yang fatal. Udara pneumatik 7 bar juga berbahaya — bisa menyebabkan kebutaan dan cedera internal. Selalu depressurize sistem sebelum bekerja, gunakan APD, dan terapkan prosedur LOTO.'},
+];
+
+const SIM_DATA = [
+  {ico:'🔵',name:'HOPSAN',desc:'Software simulasi open-source GRATIS dari Linköping University, Swedia. Ideal untuk sistem hidraulik dan pneumatik dengan antarmuka drag-and-drop.',badge:'✅ GRATIS',badgeC:'rgba(0,230,118,.1)',badgeT:'var(--green)',link:'https://hopsan.liu.se/'},
+  {ico:'🟡',name:'FluidSIM (Festo Didactic)',desc:'Software simulasi standar industri dari Festo untuk pneumatik dan hidraulik. Animasi 3D cara kerja setiap komponen. Standar pendidikan teknik global.',badge:'💰 BERBAYAR',badgeC:'rgba(255,214,0,.1)',badgeT:'var(--gold)',link:'https://www.festo-didactic.com/fluidsim/'},
+  {ico:'🟢',name:'Automation Studio (Famic)',desc:'Platform simulasi paling komprehensif — hidraulik, pneumatik, elektrik, dan PLC dalam satu environment. Digunakan universitas teknik dunia.',badge:'💰 BERBAYAR',badgeC:'rgba(255,214,0,.1)',badgeT:'var(--gold)',link:'https://www.famictech.com/'},
+  {ico:'🌐',name:'Online Simulators',desc:'Berbagai simulator berbasis browser tersedia gratis: Hydraulic Calculator, Pneumatic Circuit Builder, dan tools interaktif lainnya tanpa perlu install.',badge:'✅ GRATIS',badgeC:'rgba(0,230,118,.1)',badgeT:'var(--green)',link:'https://www.hydraulicspneumatics.com/'},
+  {ico:'📱',name:'Festo Cybernetics App',desc:'Aplikasi mobile dari Festo untuk latihan membaca simbol pneumatik dan hidraulik. Tersedia iOS dan Android. Bagus untuk belajar simbol ISO di mana saja.',badge:'✅ GRATIS',badgeC:'rgba(0,230,118,.1)',badgeT:'var(--green)',link:'https://www.festo.com/'},
+  {ico:'🎓',name:'Rowse Pneumatics',desc:'Website edukasi dari Rowse Pneumatics UK dengan tutorial lengkap, diagram, dan penjelasan komponen pneumatik standar industri Eropa.',badge:'✅ GRATIS',badgeC:'rgba(0,230,118,.1)',badgeT:'var(--green)',link:'https://www.rowse-pneumatics.co.uk/'},
+];
+
+const GLOSS_DATA = [
+  {en:'Pressure',id:'Tekanan',def:'Gaya yang bekerja per satuan luas bidang. Satuan: bar, Pa, psi. Rumus: P = F/A'},
+  {en:'Flow Rate',id:'Laju Aliran',def:'Volume fluida yang mengalir per satuan waktu. Satuan: L/min, m³/h. Menentukan kecepatan gerakan actuator'},
+  {en:'Actuator',id:'Aktuator / Penggerak',def:'Komponen yang mengubah energi fluida menjadi gerakan mekanik — cylinder (linear) atau motor (rotasi)'},
+  {en:'Check Valve',id:'Katup Searah',def:'Katup yang mengizinkan aliran hanya satu arah. Mencegah backflow secara otomatis menggunakan spring dan ball/poppet'},
+  {en:'DCV',id:'Katup Kontrol Arah',def:'Directional Control Valve — katup untuk mengarahkan aliran fluida ke port yang diinginkan. Notasi: jumlah port/jumlah posisi'},
+  {en:'Relief Valve',id:'Katup Pengaman Tekanan',def:'Katup yang terbuka otomatis saat tekanan melebihi setting untuk melindungi sistem dari overpressure. WAJIB ada'},
+  {en:'FRL Unit',id:'Unit Filter-Regulator-Lubricator',def:'Perangkat tiga-fungsi wajib dalam sistem pneumatik: menyaring (F), mengatur tekanan (R), dan melumasi (L) udara kerja'},
+  {en:'Pascal Law',id:'Hukum Pascal',def:'Tekanan pada fluida dalam ruang tertutup diteruskan ke segala arah dengan besar yang sama. Dasar kerja sistem hidraulik'},
+  {en:'Spool',id:'Spool / Inti Katup',def:'Komponen geser silindris dalam DCV yang membuka/menutup jalur aliran saat bergerak secara mekanik atau elektrik'},
+  {en:'Viscosity',id:'Viskositas',def:'Kekentalan fluida — hambatan internal terhadap aliran. Dipengaruhi suhu. Satuan: cSt (centistokes). ISO VG grade'},
+  {en:'Cavitation',id:'Kavitasi',def:'Pembentukan gelembung vakum dalam fluida akibat tekanan terlalu rendah. Sangat merusak pompa — suara seperti kerikil'},
+  {en:'Reservoir',id:'Tangki / Reservoir',def:'Wadah penyimpan oli hidraulik. Berfungsi juga sebagai heat exchanger alami, settling tank, dan deaerator'},
+  {en:'Pilot Pressure',id:'Tekanan Pilot',def:'Sinyal tekanan fluida kecil yang digunakan untuk mengontrol/mengoperasikan main valve berukuran jauh lebih besar'},
+  {en:'Counterbalance Valve',id:'Katup Penyeimbang Balik',def:'Katup yang mencegah beban jatuh bebas dengan menahan tekanan back-pressure pada jalur return. Wajib pada crane dan hoist'},
+  {en:'Cracking Pressure',id:'Tekanan Pembukaan',def:'Tekanan minimum yang diperlukan untuk mulai membuka check valve dari posisi tertutup. Biasanya 0.3–3 bar'},
+  {en:'Displacement',id:'Kapasitas Pompa/Motor',def:'Volume fluida yang dipindahkan per satu putaran pompa atau motor. Satuan: cm³/rev atau cc/rev'},
+  {en:'PSI',id:'Pounds per Square Inch',def:'Satuan tekanan non-SI. Konversi: 1 bar = 14.5 PSI. 1 PSI = 0.069 bar. Umum di sistem Amerika dan Inggris'},
+  {en:'SWL',id:'Beban Kerja Aman',def:'Safe Working Load — batas beban maksimum yang diizinkan untuk crane, winch, lifting equipment. Dilarang keras dilampaui'},
+  {en:'HPU',id:'Unit Tenaga Hidraulik',def:'Hydraulic Power Unit — paket lengkap: pompa + motor listrik + reservoir + valve + instrumentasi dalam satu unit'},
+  {en:'Air Receiver',id:'Tangki Udara / Botol Angin',def:'Tangki penyimpan udara terkompresi. SOLAS mensyaratkan kapasitas untuk 12× starting mesin induk tanpa isi ulang'},
+  {en:'LOTO',id:'Lock Out Tag Out',def:'Prosedur keselamatan: kunci dan tandai semua sumber energi sebelum bekerja pada sistem. Mencegah energiasi tak disengaja'},
+  {en:'NFU',id:'Non-Follow-Up Mode',def:'Mode kemudi manual di mana rudder bergerak selama tombol ditekan tanpa feedback. Backup saat Follow-Up gagal'},
+  {en:'Fail-Safe',id:'Aman Saat Gagal',def:'Desain yang memastikan sistem masuk ke kondisi aman saat terjadi kegagalan. Contoh: spring-to-close valve saat listrik mati'},
+  {en:'Proportional Valve',id:'Katup Proporsional',def:'Katup yang mengatur bukaan secara proporsional terhadap sinyal listrik (4–20mA). Untuk kontrol presisi kecepatan dan tekanan'},
+  {en:'Accumulator',id:'Akumulator Hidraulik',def:'Penyimpan energi hidraulik menggunakan gas nitrogen (N₂). Mirip baterai — melepas energi saat pompa mati'},
+  {en:'ISO VG',id:'ISO Viscosity Grade',def:'Standar viskositas oli ISO. VG 46 = viskositas 46 cSt pada 40°C. Kapal tropis umumnya VG 46 atau VG 68'},
+  {en:'Bleed / Bleeding',id:'Pembuangan Udara',def:'Mengeluarkan udara yang terjebak dari sistem hidraulik. Udara dalam sistem menyebabkan gerakan tersendat dan kavitasi'},
+  {en:'Stroke',id:'Langkah / Jarak Gerak',def:'Jarak maksimum gerakan piston dari satu ujung ke ujung lainnya dalam silinder hidraulik/pneumatik'},
+  {en:'Bore',id:'Diameter Dalam Silinder',def:'Diameter internal silinder. Menentukan gaya yang dihasilkan: F = P × A (A = π × bore² / 4)'},
+  {en:'Manifold',id:'Blok Distribusi',def:'Blok logam yang mengintegrasikan beberapa komponen valve dalam satu unit kompak. Mengurangi fitting dan potensi kebocoran'},
+  {en:'PLC',id:'Kontroler Logika Terprogram',def:'Programmable Logic Controller — komputer industri yang mengontrol urutan kerja valve, sensor, dan aktuator secara otomatis'},
+  {en:'Volume Efficiency',id:'Efisiensi Volumetrik',def:'Rasio flow aktual pompa terhadap flow teoritis: Qa/Qth × 100%. Normal: >90%. Menurun karena kebocoran internal pompa'},
+  {en:'PRALA',id:'Praktek Laut',def:'Praktek Laut — tahap pendidikan dimana taruna bekerja di kapal nyata sebagai bagian dari kurikulum akademi maritim'},
+  {en:'Flow Tracing',id:'Pelacakan Aliran',def:'Metode membaca diagram dengan mengikuti arah aliran fluida dari sumber tenaga → valve → actuator → return'},
+  {en:'Orbital Motor',id:'Motor Orbital',def:'Tipe motor hidraulik radial piston — menghasilkan torsi sangat tinggi pada kecepatan rendah. Ideal untuk winch kapal'},
+];
+
+const FLOW_MODAL_DATA = {
+  reservoir:{t:'RESERVOIR / TANGKI OLI',b:'Menyimpan oli hidraulik. Kapasitas 50–2000L. Dilengkapi: level gauge, temperature sensor, breather cap, return filter, dan baffle plate untuk settling. Baffle memisahkan hot return oil dari cold supply oil.'},
+  hpump:{t:'HYDRAULIC PUMP',b:'Menghasilkan ALIRAN (flow), bukan tekanan. Tekanan timbul karena hambatan sistem. Pompa gear untuk tekanan menengah (50–200 bar), pompa piston untuk tekanan tinggi (hingga 350 bar). Efisiensi volumetrik normal >90%.'},
+  filter_h:{t:'FILTER & RELIEF VALVE',b:'Filter menyaring partikel (10–25 µm) dari oli untuk melindungi komponen presisi. Relief valve membuang oli ke tangki saat tekanan melebihi setting — proteksi wajib. ΔP indicator menandakan filter perlu diganti.'},
+  check_h:{t:'CHECK VALVE',b:'Mencegah oli mengalir balik ke pompa saat pompa mati. Cracking pressure 0.5–2 bar. Wajib di outlet pompa. Pilot operated check valve bisa dibuka dengan sinyal pilot untuk mengizinkan flow kembali.'},
+  dcv:{t:'DIRECTIONAL CONTROL VALVE (DCV)',b:'Jantung sistem kontrol hidraulik/pneumatik. Spool bergerak membuka/menutup jalur antar port. Port P=supply, A/B=ke actuator, T=return ke tangki. Notasi 4/3: 4 port, 3 posisi. Posisi tengah: center condition.'},
+  fcv:{t:'FLOW CONTROL VALVE',b:'Mengatur kecepatan cylinder dengan membatasi flow rate. Pressure compensated type menjaga kecepatan konstan meski load berubah. Metering-in: kontrol aliran masuk. Metering-out: kontrol aliran keluar (lebih stabil untuk hoist).'},
+  cyl:{t:'HYDRAULIC CYLINDER (DOUBLE ACTING)',b:'Mengubah energi hidraulik menjadi gerakan linear. Double acting: aktif dua arah (maju oleh port A, mundur oleh port B). Gaya: F = P × A. Kecepatan: v = Q/A. Aplikasi utama: steering gear, crane, hatch cover.'},
+  compressor:{t:'AIR COMPRESSOR',b:'Sumber udara terkompresi untuk sistem pneumatik. Piston type untuk tekanan tinggi (air start 30 bar), screw type untuk volume besar (instrument air). SOLAS mensyaratkan minimal 2 unit kompressor independen di kapal.'},
+  receiver:{t:'AIR RECEIVER (BOTOL ANGIN)',b:'Tangki penyimpan udara bertekanan. Volume 100–5000L. SOLAS: harus mampu 12× starting mesin induk tanpa isi ulang. Dilengkapi: safety valve, drain valve, pressure gauge, dan manhole untuk inspeksi.'},
+  dryer:{t:'AFTERCOOLER & AIR DRYER',b:'Aftercooler mendinginkan udara panas dari kompresor, mengkondensasikan sebagian besar uap air. Dryer (refrigerant atau desiccant type) menghilangkan sisa kelembaban. Udara kering penting untuk instrument air dan kontrol pneumatik.'},
+  frl:{t:'FRL UNIT — Filter-Regulator-Lubricator',b:'Tiga fungsi dalam satu unit wajib pneumatik. F: menyaring partikel dan air (5–40 µm). R: menurunkan dan menstabilkan tekanan kerja (0.5–10 bar). L: menambahkan kabut oli untuk melumasi seal dan komponen downstream.'},
+  sol_p:{t:'SOLENOID DCV 5/2 (PNEUMATIK)',b:'Valve kontrol arah pneumatik 5 port, 2 posisi. Port 1=supply, 2=A (maju), 4=B (mundur), 3=exhaust A, 5=exhaust B. Solenoid elektromagnetik menggeser spool saat listrik aktif. Spring return saat listrik mati.'},
+  pneu_cyl:{t:'PNEUMATIC CYLINDER',b:'Cylinder kerja udara — lebih ringan dan lebih cepat dari hidraulik. Tekanan 4–8 bar. Single acting (spring return) atau double acting (2 port). Digunakan untuk kontrol valve, automation, dan mekanisme ringan di kapal.'},
+  bridge:{t:'BRIDGE TELEGRAPH / HELM',b:'Input perintah dari navigator di bridge. Sinyal kemudi (rudder angle command) dikirim ke controler sistem steering gear. Modern: electronic autopilot dengan GPS/ECDIS integration.'},
+  plc_sg:{t:'PLC STEERING GEAR CONTROLLER',b:'Mengolah sinyal helm, membandingkan dengan rudder angle indicator, dan mengirimkan koreksi ke proportional valve. Follow-Up mode: PLC menjaga rudder di posisi yang diperintahkan. NFU mode: manual tanpa feedback.'},
+  prop_valve:{t:'PROPORTIONAL VALVE',b:'Katup yang mengatur bukaan proporsional terhadap sinyal 4–20mA atau 0–10V. Memungkinkan kontrol halus tekanan dan flow untuk steering gear yang presisi. Lebih canggih dari solenoid on/off biasa.'},
+  hpu_sg:{t:'HPU STEERING GEAR — 250 bar',b:'Hydraulic Power Unit dedicated untuk steering gear. Dua pompa independen wajib SOLAS. Pompa variable displacement menyesuaikan flow demand. Tekanan kerja 175–250 bar. Oil cooler dan low level alarm wajib.'},
+  ram_cyl:{t:'RAM CYLINDER STEERING GEAR',b:'4 cylinder RAM double acting menggerakkan tiller/quadrant yang terhubung ke rudder stock. RAM type: piston rod = body cylinder (sangat kuat). Tekanan kerja hingga 250 bar. Gaya > 1000 kN.'},
+  rudder:{t:'RUDDER MOVEMENT',b:'Daun kemudi (rudder) digerakkan oleh tiller/quadrant dari steering gear. Perpindahan maksimum 35° ke setiap sisi (70° total). Waktu gerak wajib SOLAS: 35°→35° dalam waktu ≤ 28 detik.'},
+  rai:{t:'RUDDER ANGLE INDICATOR (RAI)',b:'Sensor posisi rudder yang mengirimkan sinyal feedback ke PLC steering gear controller. Sinyal 4–20mA atau pulse encoder. PLC menggunakan data ini untuk closed-loop control (follow-up mode).'},
+};
+
+const MODAL_DATA = {
+  physics:{t:'⚛️ Basic Physics — Fondasi Ilmu',body:`<div class="ml-pane active"><div class="msec"><h4>MENGAPA PENTING?</h4><p>Sebelum memahami sistem hidraulik dan pneumatik, fondasi fisika dasar WAJIB dikuasai. Sistem hidraulik dan pneumatik pada dasarnya adalah aplikasi terapan dari fisika fluida dan mekanika tekanan.</p></div><div class="msec"><h4>KONSEP FUNDAMENTAL</h4><ul><li><strong style="color:var(--cyan)">Hukum Pascal:</strong> Tekanan pada fluida tertutup diteruskan ke segala arah sama besar</li><li><strong style="color:var(--cyan)">P = F / A</strong> — Tekanan = Gaya / Luas Penampang</li><li><strong style="color:var(--gold)">Hukum Kontinuitas:</strong> Q₁ = Q₂ (flow masuk = flow keluar dalam pipa)</li><li><strong style="color:var(--green)">Energi Fluida:</strong> Tekanan + Kecepatan + Ketinggian = Konstan (Bernoulli)</li></ul></div><div class="msec"><h4>CONTOH PERHITUNGAN NYATA</h4><div class="mflow">Piston Ø100mm, P = 200 bar<br>A = π × (0.05)² = 0.00785 m²<br>F = 200 × 10⁵ × 0.00785 = 157,000 N = <strong>157 kN ≈ 16 ton!</strong></div></div></div>`},
+
+  elec_basic:{t:'⚡ Electrical Dasar — Fondasi Kontrol',body:`<div class="ml-pane active"><div class="msec"><h4>MENGAPA LISTRIK PENTING UNTUK H&P?</h4><p>Sistem hidraulik dan pneumatik modern 100% terintegrasi dengan listrik. Solenoid valve dioperasikan dengan 24VDC. PLC mengontrol semua valve. Sensor tekanan mengirim sinyal analog 4–20mA. <span style="color:var(--cyan)">Tanpa listrik, sistem kontrol modern tidak bisa bekerja.</span></p></div><div class="msec"><h4>KOMPONEN LISTRIK KRITIS</h4><ul><li><strong style="color:var(--cyan)">Solenoid Coil:</strong> 24VDC atau 220VAC — menggerakkan spool valve secara elektromagnetik</li><li><strong style="color:var(--gold)">PLC:</strong> Programmable Logic Controller — otak otomasi sistem</li><li><strong style="color:var(--green)">Pressure Sensor:</strong> Output 4–20mA analog — kirim data tekanan ke kontroler</li><li><strong style="color:var(--purple)">Limit Switch:</strong> Deteksi posisi valve — buka/tutup penuh</li></ul></div><div class="msec"><h4>PRINSIP SOLENOID</h4><div class="mflow">Arus Listrik → Kumparan (Coil) → Medan Magnet →<br>Plunger Besi Tertarik → Spool Bergerak → Port Terbuka</div></div></div>`},
+
+  hydraulic:{t:'💧 Hydraulic System — Sistem Hidraulik',body:`<div class="ml-pane active"><div class="msec"><h4>APA ITU SISTEM HIDRAULIK?</h4><p>Sistem yang mentransmisikan daya menggunakan fluida cair (oli) bertekanan tinggi. Oli tidak dapat dimampatkan (incompressible), sehingga tekanan diteruskan secara penuh dan efisien — menghasilkan gaya yang sangat besar.</p></div><div class="msec"><h4>KEUNGGULAN HYDRAULIC</h4><ul><li>Gaya output sangat besar (crane 25 ton, steering gear)</li><li>Kontrol presisi posisi dan kecepatan</li><li>Self-lubricating — fluida sekaligus pelumas</li><li>Power density tinggi — kompak untuk gaya besar</li></ul></div><div class="msec"><h4>KELEMAHAN</h4><ul><li>Risiko kebocoran oli — bahaya dan polusi</li><li>Sensitif terhadap kontaminasi (perlu filter ketat)</li><li>Viskositas berubah dengan suhu — perlu oil cooler</li></ul></div><div class="mflow">RESERVOIR → PUMP → FILTER → DCV → CYLINDER/MOTOR → RETURN</div></div>`},
+
+  pneumatic:{t:'💨 Pneumatic System — Sistem Pneumatik',body:`<div class="ml-pane active"><div class="msec"><h4>APA ITU SISTEM PNEUMATIK?</h4><p>Sistem yang mentransmisikan daya menggunakan udara terkompresi. Udara dapat dimampatkan (compressible), sehingga memberikan efek "bantal" yang membuat gerakan lebih halus dan responsif. Lebih bersih dari hidraulik karena media kerjanya adalah udara.</p></div><div class="msec"><h4>KEUNGGULAN PNEUMATIK</h4><ul><li>Respons sangat cepat (milidetik)</li><li>Bersih — tidak ada risiko kontaminasi oli</li><li>Sumber energi (udara) tersedia di mana-mana</li><li>Aman untuk area berbahaya (explosion-proof)</li></ul></div><div class="msec"><h4>KONSEP INTI — ROWSE PNEUMATICS</h4><div class="mflow">COMPRESSOR → VALVE → ACTUATOR<br>Tiga tahap fundamental sistem pneumatik</div></div></div>`},
+
+  compare:{t:'⚖️ Hydraulic vs Pneumatic — Mirip, Tapi Berbeda',body:`<div class="ml-pane active"><div class="msec"><h4>KESAMAAN</h4><ul><li>Keduanya mentransmisikan daya menggunakan fluida bertekanan</li><li>Sama-sama menggunakan DCV, solenoid, check valve, relief valve</li><li>Simbol ISO mirip dalam struktur, berbeda dalam detail</li><li>Solenoid coil bekerja dengan prinsip elektromagnetik yang sama</li></ul></div><div class="msec"><h4>PERBEDAAN KUNCI</h4><table class="cmp-table"><tr><th>Aspek</th><th>Hydraulic</th><th>Pneumatic</th></tr><tr><td>Media</td><td class="td-h">Oli cair</td><td class="td-p">Udara</td></tr><tr><td>Tekanan</td><td class="td-h">100–350 bar</td><td class="td-p">4–8 bar</td></tr><tr><td>Respons</td><td class="td-h">Lambat-sedang</td><td class="td-p">Sangat cepat</td></tr><tr><td>Gaya</td><td class="td-h">Sangat besar</td><td class="td-p">Sedang</td></tr></table></div></div>`},
+
+  steering:{t:'🚢 Steering Gear System',body:`<div class="ml-pane active"><div class="msec"><h4>SISTEM KEMUDI KAPAL</h4><p>Steering gear adalah sistem kritis keselamatan. Hydraulic RAM cylinder menggerakkan rudder. SOLAS mewajibkan dua pompa independen dan waktu kemudi ≤ 28 detik untuk 35°→35°.</p></div><div class="msec"><h4>ALUR SISTEM</h4><div class="mflow">Bridge Helm → PLC Controller → Proportional Valve →<br>HPU 250 bar → RAM Cylinder (4×) → Rudder 35°→35°<br>← Feedback dari Rudder Angle Indicator (RAI)</div></div><div class="msec"><h4>SOLAS REQUIREMENT</h4><ul><li>Dua pompa hidraulik independen WAJIB</li><li>Masing-masing mampu memutar rudder 35°→35° dalam 28 detik</li><li>Emergency steering dari steering gear room</li><li>NFU mode sebagai backup follow-up mode</li></ul></div></div>`},
+
+  mpu:{t:'🚢 MPU — Mesin Penggerak Utama',body:`<div class="ml-pane active"><div class="msec"><h4>HUBUNGAN MPU DENGAN H&P</h4><p>MPU (Mesin Induk Kapal) adalah pengguna terbesar sistem hidraulik dan pneumatik. Air starter pneumatik 30 bar menghidupkan mesin, sedangkan sistem governor dan fuel control menggunakan hidraulik.</p></div><div class="msec"><h4>INTEGRASI SISTEM</h4><ul><li>Air start: pneumatik 30 bar → starting mesin 2-tak</li><li>Turning gear: interlock dengan air start system</li><li>Governor: hidro-mekanik atau elektro-hidraulik</li><li>Camshaft: hidraulik untuk VIT (Variable Injection Timing)</li></ul></div></div>`},
+
+  elec_sys:{t:'🔌 Electrical System Kapal',body:`<div class="ml-pane active"><div class="msec"><h4>LISTRIK SEBAGAI PENGONTROL</h4><p>Sistem kelistrikan kapal modern adalah backbone dari semua sistem kontrol. Hidraulik dan pneumatik dikontrol secara elektronis melalui solenoid, PLC, dan sensor.</p></div><div class="msec"><h4>KOMPONEN KRITIS</h4><ul><li>Generator utama: sumber daya sistem kontrol</li><li>Emergency generator: backup saat power failure</li><li>PLC/DCS: mengontrol semua valve secara otomatis</li><li>Solenoid 24VDC: interface antara sinyal listrik dan fluida</li></ul></div></div>`},
+
+  winch:{t:'⚓ Deck Machinery — Winch & Crane',body:`<div class="ml-pane active"><div class="msec"><h4>HYDRAULIC WINCH SYSTEM</h4><div class="mflow">HPU 250 bar → Proportional DCV → Orbital Motor →<br>Drum Winch → Tali Tambat 20 ton</div></div><div class="msec"><h4>KOMPONEN UTAMA</h4><ul><li>HPU Wärtsilä: pompa piston variabel, reservoir 400L VG46</li><li>Proportional DCV: kontrol joystick operator</li><li>Orbital Motor: torsi 15,000 Nm, speed 0–50 RPM</li><li>Hydraulic Brake: spring-set, hydraulic release (fail-safe)</li><li>Counterbalance valve: cegah tali terlepas bebas</li></ul></div></div>`},
+
+  airstart:{t:'🔥 Starting Air System',body:`<div class="ml-pane active"><div class="msec"><h4>SISTEM PALING KRITIS DI KAPAL</h4><p>Starting air system adalah sistem pneumatik paling penting di kapal. Tanpa udara bertekanan yang cukup, mesin induk tidak bisa dihidupkan.</p></div><div class="msec"><h4>ALUR SISTEM</h4><div class="mflow">Compressor (×2) → Air Receiver 30 bar → Dryer →<br>Main Starting Valve → Distributor → Cylinder Starting Valve →<br>Mesin Berputar → Firing → Engine Running</div></div><div class="msec"><h4>SOLAS REQUIREMENT</h4><ul><li>Minimal 2 kompressor independen</li><li>Kapasitas receiver: min 12× starting tanpa isi ulang</li><li>Turning gear interlock wajib</li></ul></div></div>`},
+};
+
+// ═══════════════════════════════════════════════════
+// RENDER FUNCTIONS
+// ═══════════════════════════════════════════════════
+
+function renderComps(cat='all') {
+  const g = document.getElementById('compGrid');
+  const list = cat==='all' ? COMPS : COMPS.filter(c=>c.cat===cat);
+  g.innerHTML = list.map(c=>`
+    <div class="comp-card" data-cat="${c.cat}" onclick="openCompModal('${c.id}')">
+      <div class="cc-sym">${c.sym}</div>
+      <div class="cc-body">
+        <span class="cc-badge" style="background:${c.badgeC};color:${c.badgeT};border:1px solid ${c.badgeT}33;">${c.badge}</span>
+        <div class="cc-name">${c.name}</div>
+        <div class="cc-en">${c.en}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function filterComp(cat, btn) {
+  document.querySelectorAll('.cf-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderComps(cat);
+}
+
+function openCompModal(id) {
+  const c = COMPS.find(x=>x.id===id);
+  if(!c) return;
+  document.getElementById('mTitle').innerHTML = `<span style="color:${c.badgeT}">${c.badge}</span> — ${c.name}`;
+  document.getElementById('mBody').innerHTML = `
+    <div class="modal-lvls">
+      <button class="ml-tab active" onclick="switchML(this,'m-basic-${c.id}')">🟢 Basic</button>
+      <button class="ml-tab" onclick="switchML(this,'m-inter-${c.id}')">🟡 Teknis</button>
+      <button class="ml-tab" onclick="switchML(this,'m-adv-${c.id}')">🔴 Engineer</button>
+    </div>
+    <div class="ml-pane active" id="m-basic-${c.id}">
+      <div class="msym">${c.sym}<div class="msym-lbl">SIMBOL ISO 1219</div><div style="font-family:'Share Tech Mono',monospace;font-size:.7rem;color:var(--gray2)">${c.en}</div></div>
+      <div class="msec"><h4>FUNGSI UTAMA</h4><p>${c.func}</p></div>
+      <div class="msec"><h4>ARAH ALIRAN (FLOW DIRECTION)</h4><div class="mflow">${c.flow}</div></div>
+      <div class="msec"><h4>APLIKASI DI KAPAL</h4><p>${c.app}</p></div>
+    </div>
+    <div class="ml-pane" id="m-inter-${c.id}">
+      <div class="msec"><h4>CARA KERJA</h4><p>${c.cara}</p></div>
+      <div class="msec"><h4>SPESIFIKASI TEKNIS</h4><p style="font-family:'Share Tech Mono',monospace;color:var(--cyan);font-size:.85rem;">${c.spec}</p></div>
+    </div>
+    <div class="ml-pane" id="m-adv-${c.id}">
+      <div class="msec"><h4>REFERENSI STANDAR</h4>
+        <a href="https://www.hidraoil.com/technical-resources/hydraulic-symbols/" target="_blank" class="mlink">🌐 Hidraoil — Symbol Reference →</a>
+        <a href="https://www.roymech.co.uk/Useful_Tables/Drawing/Hyd_Pnue_symbols.html" target="_blank" class="mlink">🌐 Roymech Symbols →</a>
+        <a href="https://www.rowse-pneumatics.co.uk/" target="_blank" class="mlink">🌐 Rowse Pneumatics →</a>
+        <a href="https://www.festo.com/e-learning/" target="_blank" class="mlink">🌐 Festo E-Learning →</a>
+      </div>
+      <div class="msec"><h4>VIDEO ANIMASI</h4>
+        <a href="https://www.youtube.com/results?search_query=${encodeURIComponent(c.en+' animation how it works')}" target="_blank" class="mlink">🎥 Cari Animasi di YouTube →</a>
+      </div>
+    </div>
+  `;
+  openModalFn();
+}
+
+function switchML(btn, panelId) {
+  const box = btn.closest('.modal-body');
+  box.querySelectorAll('.ml-tab').forEach(b=>b.classList.remove('active'));
+  box.querySelectorAll('.ml-pane').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  const panel = document.getElementById(panelId);
+  if(panel) panel.classList.add('active');
+}
+
+function openModal(key) {
+  const d = MODAL_DATA[key];
+  if(!d) return;
+  document.getElementById('mTitle').textContent = d.t;
+  document.getElementById('mBody').innerHTML = d.body;
+  openModalFn();
+}
+
+function openFlowModal(key) {
+  const d = FLOW_MODAL_DATA[key];
+  if(!d) return;
+  document.getElementById('mTitle').textContent = d.t;
+  document.getElementById('mBody').innerHTML = `<div class="msec"><h4>PENJELASAN</h4><p style="font-size:.93rem;line-height:1.8;">${d.b}</p></div>`;
+  openModalFn();
+}
+
+function openModalFn() {
+  document.getElementById('modalBg').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeModal() {
+  document.getElementById('modalBg').classList.remove('open');
+  document.body.style.overflow='';
+}
+function closeModalClick(e) {
+  if(e.target===document.getElementById('modalBg')) closeModal();
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape') closeModal();});
+
+// Case Study
+function renderCases() {
+  const container = document.getElementById('casePanels');
+  container.innerHTML = Object.entries(CASES).map(([key,c])=>`
+    <div class="case-panel ${key==='c1'?'active':''}" id="${key}">
+      <div class="case-info">
+        <div class="case-title">${c.emoji} ${c.title}</div>
+        <p style="font-size:.85rem;color:var(--gray);margin-bottom:20px;">${c.desc}</p>
+        ${c.steps.map(s=>`
+          <div class="case-step">
+            <div class="cs-n">${s.n}</div>
+            <div class="cs-i"><h4>${s.h}</h4><p>${s.p}</p></div>
+          </div>
+        `).join('')}
+      </div>
+      <div class="case-specs">
+        <div class="spec-title">PARAMETER TEKNIS — MV NUSANTARA JAYA</div>
+        ${c.specs.map(s=>`<div class="spec-item"><span class="spec-k">${s.k}</span><span class="spec-v">${s.v}</span></div>`).join('')}
+        <div style="margin-top:20px;padding:14px;background:rgba(0,229,255,.05);border:1px solid rgba(0,229,255,.15);border-radius:4px;">
+          <div style="font-family:'Share Tech Mono',monospace;font-size:.68rem;color:var(--cyan);margin-bottom:8px;">REFERENSI INDUSTRI</div>
+          <a href="https://www.wartsila.com/marine/build/deck-machinery" target="_blank" class="mlink">🌐 Wärtsilä Marine →</a>
+          <a href="https://www.imo.org/" target="_blank" class="mlink">🌐 IMO Standards →</a>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function showCase(id, btn) {
+  document.querySelectorAll('.ct').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.case-panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(id).classList.add('active');
+}
+
+// Troubleshooting
+function renderTS() {
+  const g = document.getElementById('tsGrid');
+  g.innerHTML = TS_DATA.map(t=>`
+    <div class="ts-card">
+      <div class="ts-icon">${t.icon}</div>
+      <div class="ts-prob">❌ ${t.prob}</div>
+      <div class="ts-cause-title">⚠ KEMUNGKINAN PENYEBAB</div>
+      <ul class="ts-list">${t.causes.map(c=>`<li class="cause">${c}</li>`).join('')}</ul>
+      <div class="ts-cause-title">✓ SOLUSI / TINDAKAN</div>
+      <ul class="ts-list">${t.sols.map(s=>`<li class="sol">${s}</li>`).join('')}</ul>
+    </div>
+  `).join('');
+}
+
+// FAQ
+function renderFAQ() {
+  const g = document.getElementById('faqList');
+  g.innerHTML = FAQ_DATA.map((f,i)=>`
+    <div class="faq-item" id="faq${i}">
+      <div class="faq-q" onclick="toggleFAQ(${i})">
+        <div class="faq-qt">${i+1}. ${f.q}</div>
+        <div class="faq-ic">+</div>
+      </div>
+      <div class="faq-a">${f.a}</div>
+    </div>
+  `).join('');
+}
+function toggleFAQ(i) {
+  const el = document.getElementById('faq'+i);
+  el.classList.toggle('open');
+}
+
+// Simulation
+function renderSim() {
+  const g = document.getElementById('simGrid');
+  g.innerHTML = SIM_DATA.map(s=>`
+    <div class="sim-card">
+      <div class="sim-ico">${s.ico}</div>
+      <div class="sim-name">${s.name}</div>
+      <span class="sim-b" style="background:${s.badgeC};color:${s.badgeT};border:1px solid ${s.badgeT}33;">${s.badge}</span>
+      <div class="sim-desc">${s.desc}</div>
+      <a href="${s.link}" target="_blank" class="sim-link">Buka Website →</a>
+    </div>
+  `).join('');
+}
+
+// Glossary
+function renderGloss(filter='') {
+  const g = document.getElementById('glossGrid');
+  const f = filter.toLowerCase();
+  const list = GLOSS_DATA.filter(x=>
+    x.en.toLowerCase().includes(f)||x.id.toLowerCase().includes(f)||x.def.toLowerCase().includes(f)
+  );
+  g.innerHTML = list.map((x,i)=>`
+    <div class="gi" id="gi${i}" onclick="toggleGi(${i})">
+      <div class="gi-top">
+        <div>
+          <div class="gi-en">${x.en}</div>
+          <div class="gi-id">${x.id}</div>
+        </div>
+        <div class="gi-toggle">▶</div>
+      </div>
+      <div class="gi-def">${x.def}</div>
+    </div>
+  `).join('');
+}
+function toggleGi(i) {
+  document.getElementById('gi'+i).classList.toggle('open');
+}
+function filterGloss(val) { renderGloss(val); }
+
+// Nav
+function toggleNav() { document.getElementById('mainNav').classList.toggle('open'); }
+
+// Roadmap tabs
+function showRM(id, btn) {
+  document.querySelectorAll('.rm-tab').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.rm-panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('rm-'+id).classList.add('active');
+}
+
+// Flow tabs
+function showFlow(id, btn) {
+  document.querySelectorAll('.ft').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.flow-panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('fl-'+id).classList.add('active');
+}
+
+// Level mode
+function showLevel(id, btn) {
+  document.querySelectorAll('.lv-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.lv-panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active',''+id);
+  document.getElementById('lv-'+id).classList.add('active');
+}
+
+// Progress bar
+window.addEventListener('scroll',()=>{
+  const p = window.scrollY/(document.body.scrollHeight-window.innerHeight)*100;
+  document.getElementById('pbar').style.width=p+'%';
+});
+
+// Fade in
+const obs = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting) e.target.classList.add('vis');});
+},{threshold:.1});
+document.querySelectorAll('.fi').forEach(el=>obs.observe(el));
+
+// Particles
+function createParticles() {
+  const container = document.getElementById('particles');
+  const colors = ['rgba(0,229,255,0.3)','rgba(255,214,0,0.2)','rgba(0,230,118,0.2)'];
+  for(let i=0;i<18;i++){
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const size = Math.random()*4+2;
+    p.style.cssText = `
+      width:${size}px;height:${size}px;
+      left:${Math.random()*100}%;
+      background:${colors[Math.floor(Math.random()*colors.length)]};
+      animation-duration:${Math.random()*15+10}s;
+      animation-delay:${Math.random()*10}s;
+    `;
+    container.appendChild(p);
+  }
+}
+
+// Active nav highlight
+window.addEventListener('scroll',()=>{
+  const sections = ['hero','pohon','roadmap','komponen','flow','kasus','level','ts','faq','sim','glos'];
+  const scrollY = window.scrollY+100;
+  sections.forEach(id=>{
+    const el = document.getElementById(id);
+    if(!el) return;
+    const top = el.offsetTop;
+    const bottom = top + el.offsetHeight;
+    if(scrollY >= top && scrollY < bottom){
+      document.querySelectorAll('nav.main-nav a').forEach(a=>{
+        a.classList.toggle('active', a.getAttribute('href')==='#'+id);
+      });
+    }
+  });
+});
+
+// INIT
+createParticles();
+renderComps();
+renderCases();
+renderTS();
+renderFAQ();
+renderSim();
+renderGloss();
+</script>
+</body>
+</html>
